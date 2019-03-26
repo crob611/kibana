@@ -12,13 +12,15 @@ let isActive = false;
 export const loadingIndicator = {
   show: () => {
     if (!isActive) {
-      loadingCount.increment();
+      // Using setTimeout ensures the loadingCount observables don't change in the middle
+      // of a render and cause the "can't set state during existing transition" warning
+      setTimeout(loadingCount.increment, 0);
       isActive = true;
     }
   },
   hide: () => {
     if (isActive) {
-      loadingCount.decrement();
+      setTimeout(loadingCount.decrement, 0);
       isActive = false;
     }
   },
