@@ -46,11 +46,11 @@ export const RefreshControl = ({
 }) => {
   const { pending } = elementStats;
 
-  if (inFlight || pending > 0) {
+  /*if (inFlight || pending > 0) {
     loadingIndicator.show();
   } else {
     loadingIndicator.hide();
-  }
+  }*/
 
   const setRefresh = val => setRefreshInterval(getRefreshInterval(val));
 
