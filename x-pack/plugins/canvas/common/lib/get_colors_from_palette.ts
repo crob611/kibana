@@ -6,5 +6,11 @@
 
 import chroma from 'chroma-js';
 
-export const getColorsFromPalette = (palette, size) =>
+interface Palette {
+  type: string;
+  colors: string[];
+  gradient: boolean;
+}
+
+export const getColorsFromPalette = (palette: Palette, size: number) =>
   palette.gradient ? chroma.scale(palette.colors).colors(size) : palette.colors;

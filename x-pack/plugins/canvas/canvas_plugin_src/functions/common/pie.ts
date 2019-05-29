@@ -161,7 +161,7 @@ export function pie(): ContextFunction<'pie', PointSeries, Arguments, Render<Pie
           data,
           options: {
             canvas: false,
-            colors: getColorsFromPalette(palette, data.length),
+            colors: palette ? getColorsFromPalette(palette, data.length) : [],
             legend: getLegendConfig(legend, data.length),
             grid: {
               show: false,
