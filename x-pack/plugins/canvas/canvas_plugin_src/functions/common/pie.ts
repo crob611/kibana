@@ -15,6 +15,7 @@ import { getFunctionHelp } from '../../strings';
 import {
   ContextFunction,
   Legend,
+  LegendConfig,
   Palette,
   PointSeries,
   Render,
@@ -39,12 +40,7 @@ interface PieSeriesOptions {
 interface PieOptions {
   canvas: boolean;
   colors: string[];
-  legend: {
-    show: boolean;
-    backgroundOpacity: number;
-    labelBoxBorderColor: string;
-    position: Legend;
-  };
+  legend: LegendConfig;
   grid: {
     show: boolean;
   };

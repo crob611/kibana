@@ -94,6 +94,17 @@ export enum Legend {
   SOUTH_EAST = 'se',
 }
 
+export type LegendConfig =
+  | {
+      show: false;
+    }
+  | {
+      position: Legend;
+      show: true;
+      backgroundOpacity: number;
+      labelBoxBorderColor: string;
+    };
+
 export enum Position {
   TOP = 'top',
   BOTTOM = 'bottom',
