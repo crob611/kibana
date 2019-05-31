@@ -5,12 +5,7 @@
  */
 
 import chroma from 'chroma-js';
+import { Palette } from '../../canvas_plugin_src/functions/types';
 
-interface Palette {
-  type: string;
-  colors: string[];
-  gradient: boolean;
-}
-
-export const getColorsFromPalette = (palette: Palette, size: number) =>
+export const getColorsFromPalette = (palette: Palette, size: number): string[] =>
   palette.gradient ? chroma.scale(palette.colors).colors(size) : palette.colors;
