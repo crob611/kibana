@@ -16,6 +16,9 @@ import {
 
 const MARKER = 'CANVAS_SUGGESTION_MARKER';
 
+// If you parse an expression with the "addMeta" option it completely
+// changes the type of returned object.  The following types
+// enhance the existing AST types with the appropriate meta information
 interface ASTMetaInformation<T> {
   start: number;
   end: number;
@@ -23,23 +26,26 @@ interface ASTMetaInformation<T> {
   node: T;
 }
 
-type MetaExpressionArgAST<T> = T extends ExpressionAST
+// Wraps ExpressionArg with meta or replace ExpressionAST with ExpressionASTWithMeta
+type WrapExpressionArgWithMeta<T> = T extends ExpressionAST
   ? ExpressionASTWithMeta
   : ASTMetaInformation<T>;
 
-type MetaExpressionArg = MetaExpressionArgAST<ExpressionArgAST>;
+type ExpressionArgASTWithMeta = WrapExpressionArgWithMeta<ExpressionArgAST>;
 
 type Modify<T, R> = Pick<T, Exclude<keyof T, keyof R>> & R;
 
+// Wrap ExpressionFunctionAST with meta and modify arguments to be wrapped with meta
 type ExpressionFunctionASTWithMeta = Modify<
   ExpressionFunctionAST,
   {
     arguments: {
-      [key: string]: MetaExpressionArg[];
+      [key: string]: ExpressionArgASTWithMeta[];
     };
   }
 >;
 
+// Wrap ExpressionFunctionAST with meta and modify chain to be wrapped with meta
 type ExpressionASTWithMeta = ASTMetaInformation<
   Modify<
     ExpressionAST,
@@ -49,26 +55,26 @@ type ExpressionASTWithMeta = ASTMetaInformation<
   >
 >;
 
+// Typeguard for checking if ExpressionArg is a new expression
 function isExpression(
-  maybeExpression: MetaExpressionArg
+  maybeExpression: ExpressionArgASTWithMeta
 ): maybeExpression is ExpressionASTWithMeta {
   return typeof maybeExpression.node === 'object';
 }
 
 type valueof<T> = T[keyof T];
-
 type ValuesOfUnion<T> = T extends any ? valueof<T> : never;
 
+// All of the possible Arg Values
 type ArgValue = ValuesOfUnion<CanvasFunction['args']>;
+// All of the argument objects
 type CanvasArg = CanvasFunction['args'];
 
+// Overloads to change return type based on specs
 function getByAlias(specs: CanvasFunction[], name: string): CanvasFunction;
 // eslint-disable-next-line @typescript-eslint/unified-signatures
 function getByAlias(specs: CanvasArg, name: string): ArgValue;
-function getByAlias(
-  specs: CanvasFunction[] | CanvasFunction['args'],
-  name: string
-): CanvasFunction | ArgValue {
+function getByAlias(specs: CanvasFunction[] | CanvasArg, name: string): CanvasFunction | ArgValue {
   return untypedGetByAlias(specs, name);
 }
 
@@ -130,7 +136,6 @@ export function getAutocompleteSuggestions(
       return getArgValueSuggestions(specs, newAst, fnIndex, argName, argIndex);
     }
   } catch (e) {
-    throw e;
     // Fail silently
   }
   return [];
@@ -211,7 +216,7 @@ function getArgNameSuggestions(
   );
 
   // Filter the list of args by those which aren't already present (unless they allow multi)
-  const argEntries = Object.entries(fn.arguments).map<[string, MetaExpressionArg[]]>(
+  const argEntries = Object.entries(fn.arguments).map<[string, ExpressionArgASTWithMeta[]]>(
     ([name, values]) => {
       return [name, values.filter(value => !value.text.includes(MARKER))];
     }
@@ -280,10 +285,7 @@ function getArgValueSuggestions(
   const filtered = suggestions.filter(option => textMatches(String(option), query));
 
   // Sort by whether or not the value starts with the text at the marker, then alphabetically
-  const comparator = combinedComparator<string>(
-    startsWithComparator(query),
-    alphanumericalComparator
-  );
+  const comparator = combinedComparator<any>(startsWithComparator(query), alphanumericalComparator);
   const sorted = filtered.sort(comparator);
 
   return sorted.map(value => {
@@ -332,7 +334,8 @@ function alphanumericalComparator(a: any, b: any): number {
 }
 
 function startsWithComparator(query: string) {
-  return (a: string, b: string) => (b.startsWith(query) ? 1 : 0) - (a.startsWith(query) ? 1 : 0);
+  return (a: any, b: any) =>
+    (String(b).startsWith(query) ? 1 : 0) - (String(a).startsWith(query) ? 1 : 0);
 }
 
 type Comparator<T> = (a: T, b: T) => number;

@@ -57,7 +57,7 @@ describe('getAutocompleteSuggestions', () => {
     const expression = 'shape shape=ar';
     const suggestions = getAutocompleteSuggestions(functionSpecs, expression, expression.length);
     const shapeFn = functionSpecs.find(spec => spec.name === 'shape');
-    const matchingValues = shapeFn.args.shape.options.filter(key => key.includes('ar'));
+    const matchingValues = shapeFn.args.shape.options.filter((key: string) => key.includes('ar'));
     expect(suggestions.length).toBe(matchingValues.length);
     expect(suggestions[0].start).toBe(expression.length - 'ar'.length);
     expect(suggestions[0].end).toBe(expression.length);
@@ -109,7 +109,7 @@ describe('getAutocompleteSuggestions', () => {
       expression.length - 1
     );
     const shapeFn = functionSpecs.find(spec => spec.name === 'shape');
-    const matchingValues = shapeFn.args.shape.options.filter(key => key.includes('ar'));
+    const matchingValues = shapeFn.args.shape.options.filter((key: string) => key.includes('ar'));
     expect(suggestions.length).toBe(matchingValues.length);
     expect(suggestions[0].start).toBe(expression.length - '"ar"'.length);
     expect(suggestions[0].end).toBe(expression.length);

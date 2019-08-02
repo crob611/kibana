@@ -10,4 +10,4 @@ import { functions as browserFns } from '../../canvas_plugin_src/functions/brows
 import { functions as commonFns } from '../../canvas_plugin_src/functions/common';
 import { functions as serverFns } from '../../canvas_plugin_src/functions/server';
 
-export const functionSpecs = [...browserFns, ...commonFns, ...serverFns].map(fn => fn());
+export const functionSpecs = [...browserFns, ...commonFns, ...serverFns].map(fn => new Fn(fn()));
