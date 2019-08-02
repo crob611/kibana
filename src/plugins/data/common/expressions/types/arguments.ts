@@ -65,7 +65,6 @@ type UnresolvedArrayTypeToArgumentString<T> =
 interface BaseArgumentType<T> {
   /** Alternate names for the Function valid for use in the Expression Editor */
   aliases?: string[];
-  name?: string;
   /** Help text for the Argument to be displayed in the Expression Editor */
   help: string;
   /** Default options for the Argument */
