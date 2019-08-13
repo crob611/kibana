@@ -18,6 +18,7 @@ import { shape } from './shape';
 import { string } from './string';
 import { textarea } from './textarea';
 import { toggle } from './toggle';
+import { savedObject } from './saved_object';
 
 export const args = [
   axisConfig,
@@ -29,6 +30,7 @@ export const args = [
   palette,
   percentage,
   range,
+  savedObject,
   select,
   shape,
   string,

@@ -25,6 +25,8 @@ import { getAssets } from '../../state/selectors/assets';
 import { findExistingAsset } from '../../lib/find_existing_asset';
 import { FunctionForm as Component } from './function_form';
 
+import { getAvailableEmbeddables } from './find_saved_objects';
+
 const mapStateToProps = (state, { expressionIndex }) => ({
   context: getContextForIndex(state, expressionIndex),
   element: getSelectedElement(state),
@@ -102,6 +104,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
       }
       return onAssetAdd(type, content);
     },
+    getAvailableEmbeddables,
   };
 };
 

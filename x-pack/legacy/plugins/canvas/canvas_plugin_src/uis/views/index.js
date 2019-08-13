@@ -15,6 +15,7 @@ import { progress } from './progress';
 import { repeatImage } from './repeatImage';
 import { revealImage } from './revealImage';
 import { render } from './render';
+import { savedVisualization } from './savedVisualization';
 import { shape } from './shape';
 import { table } from './table';
 import { timefilterControl } from './timefilterControl';
@@ -31,6 +32,7 @@ export const viewSpecs = [
   repeatImage,
   revealImage,
   render,
+  savedVisualization,
   shape,
   table,
   timefilterControl,

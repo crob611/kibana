@@ -4,19 +4,19 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { I18nContext } from 'ui/i18n';
-import { npStart } from 'ui/new_platform';
 import {
   IEmbeddable,
   EmbeddablePanel,
-  EmbeddableFactoryNotFoundError,
+  embeddableFactories,
   EmbeddableInput,
-} from '../../../../../../src/legacy/core_plugins/embeddable_api/public/np_ready/public';
-import { start } from '../../../../../../src/legacy/core_plugins/embeddable_api/public/np_ready/public/legacy';
-import { EmbeddableExpression } from '../expression_types/embeddable';
-import { SavedObjectFinder } from '../../../../../../src/legacy/ui/public/saved_objects/components/saved_object_finder';
+} from '../../../../../../../src/legacy/core_plugins/embeddable_api/public';
+
+import { EmbeddableFactoryNotFoundError } from '../../../../../../../src/legacy/core_plugins/embeddable_api/public/embeddables';
+
+import { EmbeddableExpression } from '../../expression_types/embeddable';
 
 const embeddablesRegistry: {
   [key: string]: IEmbeddable;
@@ -37,16 +37,7 @@ const renderEmbeddable = (embeddableObject: IEmbeddable, domNode: HTMLElement) =
       style={{ width: domNode.offsetWidth, height: domNode.offsetHeight, cursor: 'auto' }}
     >
       <I18nContext>
-        <EmbeddablePanel
-          embeddable={embeddableObject}
-          getActions={start.getTriggerCompatibleActions}
-          getEmbeddableFactory={start.getEmbeddableFactory}
-          getAllEmbeddableFactories={start.getEmbeddableFactories}
-          notifications={npStart.core.notifications}
-          overlays={npStart.core.overlays}
-          inspector={npStart.plugins.inspector}
-          SavedObjectFinder={SavedObjectFinder}
-        />
+        <EmbeddablePanel embeddable={embeddableObject} />
       </I18nContext>
     </div>
   );
@@ -63,9 +54,7 @@ const embeddable = () => ({
     handlers: Handlers
   ) => {
     if (!embeddablesRegistry[input.id]) {
-      const factory = Array.from(start.getEmbeddableFactories()).find(
-        embeddableFactory => embeddableFactory.type === embeddableType
-      );
+      const factory = embeddableFactories.get(embeddableType);
 
       if (!factory) {
         handlers.done();

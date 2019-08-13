@@ -23,6 +23,7 @@ export const FunctionFormComponent = props => {
     onValueAdd: props.onValueAdd,
     onValueChange: props.onValueChange,
     onValueRemove: props.onValueRemove,
+    getAvailableEmbeddables: props.getAvailableEmbeddables,
   };
 
   return <div className="canvasFunctionForm">{props.expressionType.render(passedProps)}</div>;
@@ -46,4 +47,5 @@ FunctionFormComponent.propTypes = {
   onValueChange: PropTypes.func.isRequired,
   onValueRemove: PropTypes.func.isRequired,
   onValueRemove: PropTypes.func.isRequired,
+  getAvailableEmbeddables: PropTypes.func.isRequired,
 };
