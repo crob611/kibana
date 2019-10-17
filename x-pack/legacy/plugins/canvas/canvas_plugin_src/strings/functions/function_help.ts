@@ -207,12 +207,8 @@ export const getFunctionHelp = (): FunctionHelpDict => ({
   revealImage,
   rounddate,
   rowCount,
-  // TODO: elastic/kibana#44822 Disabling pending filters work
-  // @ts-ignore
   savedMap,
-  // @ts-ignore
   savedSearch,
-  // @ts-ignore
   savedVisualization,
   seriesStyle,
   shape,
