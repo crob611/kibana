@@ -12,10 +12,22 @@ import { ArgumentStrings } from '../../../i18n';
 
 const { Range: strings } = ArgumentStrings;
 
-const RangeArgInput = ({ typeInstance, onValueChange, argValue }) => {
+interface RangeArgInputProps {
+  argValue: string;
+  onValueChange: (value: number) => void;
+  typeInstance: any;
+}
+
+const RangeArgInput: React.FunctionComponent<RangeArgInputProps> = ({
+  typeInstance,
+  onValueChange,
+  argValue,
+}) => {
   const { min, max, step } = typeInstance.options;
-  const handleChange = ev => {
-    return onValueChange(Number(ev.target.value));
+  const handleChange = (
+    ev: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    return onValueChange(Number((ev.target as HTMLInputElement).value));
   };
 
   return (

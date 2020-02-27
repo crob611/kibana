@@ -9,18 +9,35 @@ import PropTypes from 'prop-types';
 import { EuiSpacer, EuiFormRow, EuiButtonGroup } from '@elastic/eui';
 import { get } from 'lodash';
 import { AssetPicker } from '../../../../public/components/asset_picker';
+// @ts-ignore untyped local
 import { elasticOutline } from '../../../lib/elastic_outline';
+// @ts-ignore untyped local
 import { resolveFromArgs } from '../../../../common/lib/resolve_dataurl';
 import { isValidHttpUrl } from '../../../../common/lib/httpurl';
 import { encode } from '../../../../common/lib/dataurl';
 import { templateFromReactComponent } from '../../../../public/lib/template_from_react_component';
 import { VALID_IMAGE_TYPES } from '../../../../common/lib/constants';
 import { ArgumentStrings } from '../../../../i18n';
+import { AssetType, ExpressionAstExpression } from '../../../../types';
 import { FileForm, LinkForm } from './forms';
 
 const { ImageUpload: strings } = ArgumentStrings;
 
-class ImageUpload extends React.Component {
+interface ImageUploadProps {
+  onAssetAdd: (type: string, content: string) => string;
+  onValueChange: (value: ExpressionAstExpression) => void;
+  typeInstance: any;
+  resolvedArgValue: string;
+  assets: Record<string, AssetType>;
+}
+
+interface ImageUploadState {
+  loading: boolean;
+  url: string | null;
+  urlType: string;
+}
+
+class ImageUpload extends React.Component<ImageUploadProps, ImageUploadState> {
   static propTypes = {
     onAssetAdd: PropTypes.func.isRequired,
     onValueChange: PropTypes.func.isRequired,
@@ -29,18 +46,23 @@ class ImageUpload extends React.Component {
     assets: PropTypes.object.isRequired,
   };
 
-  constructor(props) {
+  private inputRefs = {
+    srcUrlText: undefined as any,
+  };
+  private _isMounted = false;
+
+  constructor(props: ImageUploadProps) {
     super(props);
 
     const url = props.resolvedArgValue || null;
 
     let urlType = Object.keys(props.assets).length ? 'asset' : 'file';
     // if not a valid base64 string, will show as missing asset icon
-    if (isValidHttpUrl(url)) {
+    if (isValidHttpUrl(url || '')) {
       urlType = 'link';
     }
 
-    this.inputRefs = {};
+    this.inputRefs = { srcUrlText: null };
 
     this.state = {
       loading: false,
@@ -58,7 +80,7 @@ class ImageUpload extends React.Component {
     this._isMounted = false;
   }
 
-  updateAST = assetId => {
+  updateAST = (assetId: string) => {
     this.props.onValueChange({
       type: 'expression',
       chain: [
@@ -73,26 +95,29 @@ class ImageUpload extends React.Component {
     });
   };
 
-  handleUpload = files => {
+  handleUpload = (files: FileList) => {
     const { onAssetAdd } = this.props;
-    const [file] = files;
+    const file = files.item(0);
+    if (file) {
+      const [type, subtype] = get(file, 'type', '').split('/');
+      if (type === 'image' && VALID_IMAGE_TYPES.indexOf(subtype) >= 0) {
+        this.setState({ loading: true }); // start loading indicator
 
-    const [type, subtype] = get(file, 'type', '').split('/');
-    if (type === 'image' && VALID_IMAGE_TYPES.indexOf(subtype) >= 0) {
-      this.setState({ loading: true }); // start loading indicator
+        encode(file)
+          .then(dataurl => onAssetAdd('dataurl', dataurl))
+          .then(assetId => {
+            this.updateAST(assetId);
 
-      encode(file)
-        .then(dataurl => onAssetAdd('dataurl', dataurl))
-        .then(assetId => {
-          this.updateAST(assetId);
-
-          // this component can go away when onValueChange is called, check for _isMounted
-          this._isMounted && this.setState({ loading: false }); // set loading state back to false
-        });
+            // this component can go away when onValueChange is called, check for _isMounted'
+            if (this._isMounted) {
+              this.setState({ loading: false });
+            }
+          });
+      }
     }
   };
 
-  changeUrlType = optionId => {
+  changeUrlType = (optionId: string) => {
     this.setState({ urlType: optionId });
   };
 
@@ -108,7 +133,7 @@ class ImageUpload extends React.Component {
     const { loading, url, urlType } = this.state;
     const assets = Object.values(this.props.assets);
 
-    let selectedAsset = {};
+    let selectedAsset = {} as AssetType;
 
     const urlTypeOptions = [
       { id: 'file', label: strings.getFileUrlType() },
@@ -119,7 +144,7 @@ class ImageUpload extends React.Component {
         id: 'asset',
         label: strings.getAssetUrlType(),
       });
-      selectedAsset = assets.find(({ value }) => value === url) || {};
+      selectedAsset = assets.find(({ value }) => value === url) || ({} as AssetType);
     }
 
     const selectUrlType = (
@@ -135,7 +160,7 @@ class ImageUpload extends React.Component {
       </EuiFormRow>
     );
 
-    const forms = {
+    const forms: Record<string, JSX.Element> = {
       file: <FileForm loading={loading} onChange={this.handleUpload} />,
       link: (
         <LinkForm
@@ -153,11 +178,13 @@ class ImageUpload extends React.Component {
       ),
     };
 
+    const form = forms[urlType];
+
     return (
       <div className="canvasSidebar__panel-noMinWidth" style={{ position: 'relative' }}>
         {selectUrlType}
         <EuiSpacer size="s" />
-        {forms[urlType]}
+        {form}
         <EuiSpacer size="s" />
       </div>
     );
@@ -170,7 +197,8 @@ export const imageUpload = () => ({
   help: strings.getHelp(),
   resolveArgValue: true,
   template: templateFromReactComponent(ImageUpload),
-  resolve({ args }) {
+  // TODO: I don't think this resolve function is ever used.
+  resolve({ args }: { args: any }) {
     return { dataurl: resolveFromArgs(args, elasticOutline) };
   },
 });

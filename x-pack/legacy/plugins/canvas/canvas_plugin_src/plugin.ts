@@ -21,7 +21,6 @@ import { datasourceSpecs } from './uis/datasources';
 import { modelSpecs } from './uis/models';
 // @ts-ignore Untyped Local
 import { viewSpecs } from './uis/views';
-// @ts-ignore Untyped Local
 import { args as argSpecs } from './uis/arguments';
 import { tagSpecs } from './uis/tags';
 import { templateSpecs } from './templates';

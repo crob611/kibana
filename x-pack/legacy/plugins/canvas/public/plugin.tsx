@@ -31,8 +31,7 @@ import { featureCatalogueEntry } from './feature_catalogue_entry';
 import { ExpressionsSetup, ExpressionsStart } from '../../../../../src/plugins/expressions/public';
 // @ts-ignore untyped local
 import { datasourceSpecs } from './expression_types/datasources';
-// @ts-ignore untyped local
-import { argTypeSpecs } from './expression_types/arg_types';
+import { argTypeSpecs } from './expression_types/argument_uis';
 import { transitions } from './transitions';
 import { registerLanguage } from './lib/monaco_language_def';
 

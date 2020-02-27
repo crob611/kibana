@@ -4,11 +4,17 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+// @ts-ignore Untyped Librry
 import { parse } from 'tinymath';
 import { unquoteString } from '../../../../common/lib/unquote_string';
 
+export interface FormObject {
+  fn: string;
+  column: string;
+}
+
 // break out into separate function, write unit tests first
-export function getFormObject(argValue) {
+export function getFormObject(argValue: string): FormObject {
   if (argValue === '') {
     return {
       fn: '',

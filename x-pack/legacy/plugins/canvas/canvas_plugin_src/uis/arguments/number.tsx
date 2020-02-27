@@ -9,18 +9,33 @@ import PropTypes from 'prop-types';
 import { compose, withProps } from 'recompose';
 import { EuiFieldNumber, EuiButton, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { get } from 'lodash';
+// @ts-ignore Untyped Local
 import { createStatefulPropHoc } from '../../../public/components/enhance/stateful_prop';
 import { templateFromReactComponent } from '../../../public/lib/template_from_react_component';
 import { ArgumentStrings } from '../../../i18n';
 
 const { Number: strings } = ArgumentStrings;
 
+interface NumberArgInputProps {
+  updateValue: (event: React.ChangeEvent) => void;
+  value: number | string;
+  confirm?: string;
+  commit: (value: number) => void;
+  argId: string;
+}
+
 // This is basically a direct copy of the string input, but with some Number() goodness maybe you think that's cheating and it should be
 // abstracted. If you can think of a 3rd or 4th usage for that abstraction, cool, do it, just don't make it more confusing. Copying is the
 // most understandable way to do this. There, I said it.
 
 // TODO: Support max/min as options
-const NumberArgInput = ({ updateValue, value, confirm, commit, argId }) => (
+const NumberArgInput: React.FunctionComponent<NumberArgInputProps> = ({
+  updateValue,
+  value,
+  confirm,
+  commit,
+  argId,
+}) => (
   <EuiFlexGroup gutterSize="s">
     <EuiFlexItem>
       <EuiFieldNumber
@@ -48,17 +63,27 @@ NumberArgInput.propTypes = {
   commit: PropTypes.func.isRequired,
 };
 
-const EnhancedNumberArgInput = compose(
-  withProps(({ onValueChange, typeInstance, argValue }) => ({
-    confirm: get(typeInstance, 'options.confirm'),
-    commit: onValueChange,
-    value: argValue,
-  })),
+interface IncomingProps {
+  onValueChange: (value: any) => void;
+  typeInstance: any;
+  argValue: string;
+}
+
+const EnhancedNumberArgInput = compose<NumberArgInputProps, NumberArgInputProps>(
+  withProps<Partial<NumberArgInputProps>, IncomingProps>(
+    ({ onValueChange, typeInstance, argValue }) => ({
+      confirm: get(typeInstance, 'options.confirm'),
+      commit: onValueChange,
+      value: argValue,
+    })
+  ),
   createStatefulPropHoc('value')
 )(NumberArgInput);
 
 EnhancedNumberArgInput.propTypes = {
+  // @ts-ignore
   argValue: PropTypes.any.isRequired,
+  // @ts-ignore
   onValueChange: PropTypes.func.isRequired,
   typeInstance: PropTypes.object.isRequired,
 };

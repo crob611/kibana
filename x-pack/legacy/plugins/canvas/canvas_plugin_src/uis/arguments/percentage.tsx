@@ -12,9 +12,19 @@ import { ArgumentStrings } from '../../../i18n';
 
 const { Percentage: strings } = ArgumentStrings;
 
-const PercentageArgInput = ({ onValueChange, argValue }) => {
-  const handleChange = ev => {
-    return onValueChange(ev.target.value / 100);
+interface PercentageArgInputProps {
+  onValueChange: (value: number) => void;
+  argValue: number;
+}
+
+const PercentageArgInput: React.FunctionComponent<PercentageArgInputProps> = ({
+  onValueChange,
+  argValue,
+}) => {
+  const handleChange = (
+    ev: React.ChangeEvent<HTMLInputElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    return onValueChange(Number((ev.target as HTMLInputElement).value) / 100);
   };
 
   return (
@@ -33,7 +43,6 @@ const PercentageArgInput = ({ onValueChange, argValue }) => {
 PercentageArgInput.propTypes = {
   onValueChange: PropTypes.func.isRequired,
   argValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]).isRequired,
-  argId: PropTypes.string.isRequired,
 };
 
 export const percentage = () => ({

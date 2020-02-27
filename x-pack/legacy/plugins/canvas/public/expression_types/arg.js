@@ -7,11 +7,11 @@
 import { createElement } from 'react';
 import { pick } from 'lodash';
 import { ArgForm } from '../components/arg_form';
-import { argTypeRegistry } from './arg_type';
+import { argumentUIRegistry } from './argument_ui';
 
 export class Arg {
   constructor(props) {
-    const argType = argTypeRegistry.get(props.argType);
+    const argType = argumentUIRegistry.get(props.argType);
     if (!argType) {
       throw new Error(`Invalid arg type: ${props.argType}`);
     }

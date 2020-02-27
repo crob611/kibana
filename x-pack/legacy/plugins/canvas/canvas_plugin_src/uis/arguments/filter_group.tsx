@@ -20,24 +20,39 @@ import { ArgumentStrings } from '../../../i18n';
 
 const { FilterGroup: strings } = ArgumentStrings;
 
-const FilterGroupInput = ({ onValueChange, argValue, argId, filterGroups }) => {
+interface FilterGroupInputProps {
+  onValueChange: (value: string) => void;
+  argValue: string | null;
+  argId: string;
+  filterGroups: string[];
+}
+
+const FilterGroupInput: React.FunctionComponent<FilterGroupInputProps> = ({
+  onValueChange,
+  argValue,
+  argId,
+  filterGroups,
+}) => {
   const [inputValue, setInputValue] = useState('');
   const [addMode, setAddMode] = useState(false);
 
   // make sure the argValue is always included in the filter group list
   const argValueChoice = argValue && !filterGroups.includes(argValue) ? [{ text: argValue }] : [];
 
-  const choices = [{ text: 'No group', value: '' }].concat(
+  const choices = ([{ text: 'No group', value: '' }] as Array<{
+    text: string;
+    value?: string;
+  }>).concat(
     argValueChoice,
     filterGroups.map(f => ({ text: f }))
   );
 
-  const handleSelectGroup = ev => {
+  const handleSelectGroup = (ev: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = ev.target.value;
     onValueChange(selected);
   };
 
-  const handleAddGroup = ev => {
+  const handleAddGroup = (ev: React.FormEvent<HTMLFormElement> | React.MouseEvent) => {
     // stop the form from submitting
     ev.preventDefault();
     // set the new value
@@ -94,9 +109,6 @@ const FilterGroupInput = ({ onValueChange, argValue, argId, filterGroups }) => {
 FilterGroupInput.propTypes = {
   onValueChange: PropTypes.func.isRequired,
   argValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool]).isRequired,
-  typeInstance: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-  }),
   argId: PropTypes.string.isRequired,
 };
 

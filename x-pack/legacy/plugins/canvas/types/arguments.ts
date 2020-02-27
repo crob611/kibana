@@ -18,6 +18,12 @@ export interface ArgumentHandlers {
   onDestroy: GenericCallback;
 }
 
+export type ArgumentRenderer<T> = (
+  domNode: HTMLElement,
+  config: T,
+  handlers: ArgumentHandlers
+) => void;
+
 export interface ArgumentSpec<ArgumentConfig = {}> {
   /** The argument type */
   name: string;
@@ -29,16 +35,16 @@ export interface ArgumentSpec<ArgumentConfig = {}> {
    * A function that renders a compact, non-collapsible argument form
    * If template is also provided, then this form goes in the accordion header
    * */
-  simpleTemplate?: (
-    domNode: HTMLElement,
-    config: ArgumentConfig,
-    handlers: ArgumentHandlers
-  ) => void;
+  simpleTemplate?: ArgumentRenderer<ArgumentConfig>;
   /**
    * A function that renders a complex/large argument
    * This is nested in an accordian so it can be expanded/collapsed
    */
-  template?: (domNode: HTMLElement, config: ArgumentConfig, handlers: ArgumentHandlers) => void;
+  template?: ArgumentRenderer<ArgumentConfig>;
+  /** Default value for the argument */
+  default?: string;
+  /** Does the argument need to be resolved */
+  resolveArgValue?: boolean;
 }
 
 export type ArgumentFactory<ArgumentConfig = {}> = () => ArgumentSpec<ArgumentConfig>;

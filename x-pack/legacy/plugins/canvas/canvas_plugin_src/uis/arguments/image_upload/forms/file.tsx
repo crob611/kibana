@@ -5,13 +5,19 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+// @ts-ignore Untyped Library
 import { EuiFilePicker } from '@elastic/eui';
 import { Loading } from '../../../../../public/components/loading/loading';
 import { ArgumentStrings } from '../../../../../i18n';
 
 const { ImageUpload: strings } = ArgumentStrings;
 
-export const FileForm = ({ loading, onChange }) =>
+interface FileFormProps {
+  loading: boolean;
+  onChange: (files: FileList) => void;
+}
+
+export const FileForm: React.FunctionComponent<FileFormProps> = ({ loading, onChange }) =>
   loading ? (
     <Loading animated text={strings.getImageUploading()} />
   ) : (
@@ -27,5 +33,5 @@ export const FileForm = ({ loading, onChange }) =>
 
 FileForm.propTypes = {
   loading: PropTypes.bool,
-  onUpload: PropTypes.func,
+  onChange: PropTypes.func,
 };

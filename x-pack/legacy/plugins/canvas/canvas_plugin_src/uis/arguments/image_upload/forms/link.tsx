@@ -11,13 +11,19 @@ import { ArgumentStrings } from '../../../../../i18n';
 
 const { ImageUpload: strings } = ArgumentStrings;
 
-export const LinkForm = ({ url, inputRef, onSubmit }) => (
+interface LinkFormProps {
+  url: string | null;
+  inputRef: React.Ref<any>;
+  onSubmit: (event: React.MouseEvent | React.FormEvent) => void;
+}
+
+export const LinkForm: React.FunctionComponent<LinkFormProps> = ({ url, inputRef, onSubmit }) => (
   <EuiFormRow display="rowCompressed" onSubmit={onSubmit} className="eui-textRight">
     <EuiFlexGroup gutterSize="xs">
       <EuiFlexItem>
         <EuiFieldText
           compressed
-          defaultValue={url}
+          defaultValue={url || undefined}
           inputRef={inputRef}
           placeholder={strings.getUrlFieldPlaceholder()}
           aria-label={strings.getUrlFieldPlaceholder()}

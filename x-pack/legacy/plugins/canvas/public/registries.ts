@@ -11,12 +11,12 @@ import { elementsRegistry } from './lib/elements_registry';
 // @ts-ignore untyped local
 import { templatesRegistry } from './lib/templates_registry';
 import { tagsRegistry } from './lib/tags_registry';
-import { ElementFactory } from '../types';
+import { ElementFactory, ArgumentFactory } from '../types';
 // @ts-ignore untyped local
 import { transitionsRegistry } from './lib/transitions_registry';
 
 import {
-  argTypeRegistry,
+  argumentUIRegistry,
   datasourceRegistry,
   modelRegistry,
   transformRegistry,
@@ -33,7 +33,7 @@ export function initRegistries() {
     datasourceUIs: datasourceRegistry,
     modelUIs: modelRegistry,
     viewUIs: viewRegistry,
-    argumentUIs: argTypeRegistry,
+    argumentUIs: argumentUIRegistry,
     templates: templatesRegistry,
     tagUIs: tagsRegistry,
     transitions: transitionsRegistry,
@@ -60,7 +60,7 @@ export function addViewUIs(viewUIs: any[]) {
   register(registries, { viewUIs });
 }
 
-export function addArgumentUIs(argumentUIs: any[]) {
+export function addArgumentUIs(argumentUIs: ArgumentFactory[]) {
   register(registries, { argumentUIs });
 }
 

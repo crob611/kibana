@@ -5,6 +5,7 @@
  */
 
 export * from '../../../../../src/plugins/expressions/common';
+export * from './arguments';
 export * from './assets';
 export * from './canvas';
 export * from './elements';

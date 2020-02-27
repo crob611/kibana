@@ -8,20 +8,37 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import { getType } from '@kbn/interpreter/common';
+// @ts-ignore Untyped Local
 import { PalettePicker } from '../../../public/components/palette_picker';
 import { templateFromReactComponent } from '../../../public/lib/template_from_react_component';
 import { ArgumentStrings } from '../../../i18n';
+import { ExpressionAstExpression } from '../../../types';
 
 const { Palette: strings } = ArgumentStrings;
 
-const PaletteArgInput = ({ onValueChange, argValue, renderError }) => {
+interface PaletteArgInputProps {
+  onValueChange: (expression: ExpressionAstExpression) => void;
+  argValue: ExpressionAstExpression;
+  renderError: () => void;
+}
+
+interface Palette {
+  colors: string[];
+  gradient: boolean;
+}
+
+const PaletteArgInput: React.FunctionComponent<PaletteArgInputProps> = ({
+  onValueChange,
+  argValue,
+  renderError,
+}) => {
   // Why is this neccesary? Does the dialog really need to know what parameter it is setting?
 
   const throwNotParsed = () => renderError();
 
   // TODO: This is weird, its basically a reimplementation of what the interpretter would return.
   // Probably a better way todo this, and maybe a better way to handle template stype objects in general?
-  function astToPalette({ chain }) {
+  function astToPalette({ chain }: ExpressionAstExpression) {
     if (chain.length !== 1 || chain[0].function !== 'palette') {
       throwNotParsed();
     }
@@ -41,8 +58,8 @@ const PaletteArgInput = ({ onValueChange, argValue, renderError }) => {
     }
   }
 
-  function handleChange(palette) {
-    const astObj = {
+  function handleChange(palette: Palette) {
+    const astObj: ExpressionAstExpression = {
       type: 'expression',
       chain: [
         {

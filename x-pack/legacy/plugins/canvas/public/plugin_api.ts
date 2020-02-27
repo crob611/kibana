@@ -7,6 +7,7 @@ import {
   AnyExpressionFunctionDefinition,
   AnyExpressionTypeDefinition,
   RendererFactory,
+  ArgumentFactory,
 } from '../types';
 import { ElementFactory } from '../types';
 import { ExpressionsSetup } from '../../../../../src/plugins/expressions/public';
@@ -14,7 +15,7 @@ import { ExpressionsSetup } from '../../../../../src/plugins/expressions/public'
 type AddToRegistry<T extends any> = (add: T[]) => void;
 
 export interface CanvasApi {
-  addArgumentUIs: AddToRegistry<any>;
+  addArgumentUIs: AddToRegistry<ArgumentFactory<any>>;
   addDatasourceUIs: AddToRegistry<any>;
   addElements: AddToRegistry<ElementFactory>;
   addFunctions: AddToRegistry<() => AnyExpressionFunctionDefinition>;

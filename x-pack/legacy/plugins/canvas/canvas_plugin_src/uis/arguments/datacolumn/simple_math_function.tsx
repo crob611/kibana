@@ -11,7 +11,19 @@ import { ArgumentStrings } from '../../../../i18n';
 
 const { DataColumn: strings } = ArgumentStrings;
 
-export const SimpleMathFunction = ({ onChange, value, inputRef, onlymath }) => {
+interface SimpleMathFunctionProps {
+  onChange: (event: React.ChangeEvent) => void;
+  value: string;
+  inputRef: any;
+  onlymath: boolean;
+}
+
+export const SimpleMathFunction: React.FunctionComponent<SimpleMathFunctionProps> = ({
+  onChange,
+  value,
+  inputRef,
+  onlymath,
+}) => {
   const options = [
     { text: strings.getOptionAverage(), value: 'mean' },
     { text: strings.getOptionCount(), value: 'size' },
