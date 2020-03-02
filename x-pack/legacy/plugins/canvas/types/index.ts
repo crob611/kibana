@@ -10,6 +10,7 @@ export * from './assets';
 export * from './canvas';
 export * from './elements';
 export * from './functions';
+export * from './function_form';
 export * from './renderers';
 export * from './shortcuts';
 export * from './state';

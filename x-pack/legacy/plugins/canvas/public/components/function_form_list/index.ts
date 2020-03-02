@@ -11,6 +11,8 @@ import { interpretAst } from '../../lib/run_interpreter';
 import { modelRegistry, viewRegistry, transformRegistry } from '../../expression_types';
 import { FunctionFormList as Component } from './function_form_list';
 
+import { CanvasElement, FunctionForm } from '../../../types';
+
 function normalizeContext(chain) {
   if (!Array.isArray(chain) || !chain.length) {
     return null;
@@ -29,7 +31,16 @@ function getArgTypeDef(fn) {
   return modelRegistry.get(fn) || viewRegistry.get(fn) || transformRegistry.get(fn);
 }
 
-const functionFormItems = withProps(props => {
+interface IncomingFunctionFormListProps {
+  element: CanvasElement;
+  newProp: string;
+}
+
+interface OutgoingFunctionFormListProps {
+  functionFormItems: 
+}
+
+const functionFormItems = withProps<IncomingFunctionFormListProps, OutgoingFunctionFormListProps>(props => {
   const selectedElement = props.element;
   const FunctionFormChain = get(selectedElement, 'ast.chain', []);
 
