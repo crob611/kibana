@@ -37,13 +37,16 @@ interface Options {
 /**
  * Meant to be a replacement for plugins/interpreter/interpretAST
  */
-export async function interpretAst(ast: ExpressionAstExpression): Promise<ExpressionValue> {
+export async function interpretAst(
+  ast: ExpressionAstExpression,
+  input?: ExpressionValue
+): Promise<ExpressionValue> {
   if (!expressionsStarting) {
     throw new Error('Interpreter has not been initialized');
   }
 
   const expressions = await expressionsStarting;
-  return await expressions.execute(ast).getData();
+  return await expressions.execute(ast, input).getData();
 }
 
 /**

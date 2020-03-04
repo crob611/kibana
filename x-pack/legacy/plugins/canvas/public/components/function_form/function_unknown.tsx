@@ -7,12 +7,11 @@
 import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import { ComponentStrings } from '../../../i18n';
+import { FunctionFormOutgoingProps } from './';
 
-interface Props {
-  /** the type of the argument */
-  argType: string;
-}
 const { FunctionFormFunctionUnknown: strings } = ComponentStrings;
+
+type Props = Pick<FunctionFormOutgoingProps, 'argType'>;
 
 export const FunctionUnknown: FunctionComponent<Props> = ({ argType }) => (
   <div className="canvasFunctionForm canvasFunctionForm--unknown-expression">

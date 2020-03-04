@@ -7,10 +7,35 @@
 import { createElement } from 'react';
 import { pick } from 'lodash';
 import { ArgForm } from '../components/arg_form';
-import { argumentUIRegistry } from './argument_ui';
+import { argumentUIRegistry, ArgumentUI } from './argument_ui';
+
+interface FunctionFormArgumentSpec {
+  argType: string;
+  multi: boolean;
+  required: boolean;
+  types: string[];
+  default: any;
+  options: Record<string, any>;
+  resolve: () => Record<string, any>;
+
+  name: string;
+  displayName: string;
+  help: string;
+}
 
 export class Arg {
-  constructor(props) {
+  public name: string;
+  public displayName: string;
+  public help: string;
+  public argType: ArgumentUI;
+  public multi: boolean;
+  public required: boolean;
+  public types: string[];
+  public default: any;
+  public options: Record<string, any>;
+  public resolve: () => Record<string, any>;
+
+  constructor(props: FunctionFormArgumentSpec) {
     const argType = argumentUIRegistry.get(props.argType);
     if (!argType) {
       throw new Error(`Invalid arg type: ${props.argType}`);
@@ -31,7 +56,7 @@ export class Arg {
 
     const viewOverrides = {
       argType,
-      ...pick(props, [
+      ...pick<Omit<FunctionFormArgumentSpec, 'argType'>, FunctionFormArgumentSpec>(props, [
         'name',
         'displayName',
         'help',
@@ -44,7 +69,18 @@ export class Arg {
       ]),
     };
 
-    Object.assign(this, defaultProps, argType, viewOverrides);
+    const initializerValues = Object.assign({}, defaultProps, argType, viewOverrides);
+
+    this.name = initializerValues.name;
+    this.displayName = initializerValues.displayName;
+    this.help = initializerValues.help;
+    this.multi = initializerValues.multi;
+    this.required = initializerValues.required;
+    this.types = initializerValues.types;
+    this.default = initializerValues.default;
+    this.resolve = initializerValues.resolve;
+    this.options = initializerValues.options;
+    this.argType = initializerValues.argType;
   }
 
   // TODO: Document what these otherProps are. Maybe make them named arguments?

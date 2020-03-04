@@ -8,7 +8,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Loading } from '../loading';
 
-export class FunctionFormContextPending extends React.PureComponent {
+import { FunctionFormOutgoingProps } from './';
+
+type Props = Pick<
+  FunctionFormOutgoingProps,
+  'context' | 'contextExpression' | 'expressionType' | 'updateContext'
+>;
+
+export class FunctionFormContextPending extends React.PureComponent<Props> {
   static propTypes = {
     context: PropTypes.object,
     contextExpression: PropTypes.string,
@@ -20,14 +27,14 @@ export class FunctionFormContextPending extends React.PureComponent {
     this.fetchContext(this.props);
   }
 
-  UNSAFE_componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps: Props) {
     const oldContext = this.props.contextExpression;
     const newContext = newProps.contextExpression;
     const forceUpdate = newProps.expressionType.requiresContext && oldContext !== newContext;
     this.fetchContext(newProps, forceUpdate);
   }
 
-  fetchContext = (props, force = false) => {
+  fetchContext = (props: Props, force: boolean = false) => {
     // dispatch context update if none is provided
     const { expressionType, context, updateContext } = props;
     if (force || (context == null && expressionType.requiresContext)) {

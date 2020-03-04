@@ -25,7 +25,11 @@ import { getAssets } from '../../state/selectors/assets';
 import { findExistingAsset } from '../../lib/find_existing_asset';
 import { FunctionForm as Component } from './function_form';
 
-const mapStateToProps = (state, { expressionIndex }) => ({
+import { FunctionForm as FunctionFormType } from '../../expression_types/function_form';
+
+import { State, FunctionForm as FunctionFormProps, CanvasElement } from '../../../types';
+
+const mapStateToProps = (state: State, { expressionIndex }: FunctionFormProps) => ({
   context: getContextForIndex(state, expressionIndex),
   element: getSelectedElement(state),
   pageId: getSelectedPage(state),
@@ -33,14 +37,20 @@ const mapStateToProps = (state, { expressionIndex }) => ({
   filterGroups: getGlobalFilterGroups(state),
 });
 
-const mapDispatchToProps = (dispatch, { expressionIndex }) => ({
-  addArgument: (element, pageId) => (argName, argValue) => () => {
+const mapDispatchToProps = (dispatch, { expressionIndex }: FunctionFormProps) => ({
+  addArgument: (element: CanvasElement, pageId: string) => (
+    argName: string,
+    argValue: any
+  ) => () => {
     dispatch(
       addArgumentValueAtIndex({ index: expressionIndex, element, pageId, argName, value: argValue })
     );
   },
-  updateContext: element => () => dispatch(fetchContext(expressionIndex, element)),
-  setArgument: (element, pageId) => (argName, valueIndex) => value => {
+  updateContext: (element: CanvasElement) => () => dispatch(fetchContext(expressionIndex, element)),
+  setArgument: (element: CanvasElement, pageId: string) => (
+    argName: string,
+    valueIndex: number
+  ) => (value: any) => {
     dispatch(
       setArgumentAtIndex({
         index: expressionIndex,
@@ -52,7 +62,10 @@ const mapDispatchToProps = (dispatch, { expressionIndex }) => ({
       })
     );
   },
-  deleteArgument: (element, pageId) => (argName, argIndex) => () => {
+  deleteArgument: (element: CanvasElement, pageId: string) => (
+    argName: string,
+    argIndex: number
+  ) => () => {
     dispatch(
       deleteArgumentAtIndex({
         index: expressionIndex,
@@ -63,7 +76,7 @@ const mapDispatchToProps = (dispatch, { expressionIndex }) => ({
       })
     );
   },
-  onAssetAdd: (type, content) => {
+  onAssetAdd: (type: string, content: string) => {
     // make the ID here and pass it into the action
     const assetId = getId('asset');
     dispatch(createAsset(type, content, assetId));
@@ -73,9 +86,13 @@ const mapDispatchToProps = (dispatch, { expressionIndex }) => ({
   },
 });
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+const mergeProps = (
+  stateProps: ReturnType<typeof mapStateToProps>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
+  ownProps: FunctionFormProps
+) => {
   const { element, pageId, assets } = stateProps;
-  const { argType, nextArgType } = ownProps;
+  const { argType, nextArgType, argTypeDef } = ownProps;
   const {
     updateContext,
     setArgument,
@@ -85,17 +102,22 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...dispatchers
   } = dispatchProps;
 
+  if (!element) {
+    throw new Error('could not find element');
+  }
+
   return {
     ...stateProps,
     ...dispatchers,
     ...ownProps,
     updateContext: updateContext(element),
-    expressionType: findExpressionType(argType),
+    //expressionType: findExpressionType(argType),
+    expressionType: argTypeDef as FunctionFormType,
     nextExpressionType: nextArgType ? findExpressionType(nextArgType) : nextArgType,
     onValueChange: setArgument(element, pageId),
     onValueAdd: addArgument(element, pageId),
     onValueRemove: deleteArgument(element, pageId),
-    onAssetAdd: (type, content) => {
+    onAssetAdd: (type: string, content: string) => {
       const existingId = findExistingAsset(type, content, assets);
       if (existingId) {
         return existingId;
@@ -106,6 +128,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 };
 
 export const FunctionForm = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Component);
+
+export type FunctionFormOutgoingProps = ReturnType<typeof mergeProps>;
 
 FunctionForm.propTypes = {
   expressionIndex: PropTypes.number,

@@ -14,7 +14,52 @@ import { SidebarSectionTitle } from '../components/sidebar/sidebar_section_title
 import { BaseForm } from './base_form';
 import { Arg } from './arg';
 
+import {
+  FunctionForm as FunctionFormType,
+  ExpressionAstArgument,
+  ExpressionAstExpression,
+  ExpressionContext,
+} from '../../types';
+
+interface FunctionFormRenderProps {
+  argResolver: (argAst: ExpressionAstExpression) => Promise<any>;
+  args: Record<string, ExpressionAstArgument[]>;
+  argType: string;
+  argTypeDef: any; // This is is the View. We need to come up with a type for this
+  context: ExpressionContext;
+  expressionIndex: number;
+  expressionType: any; // This is the same view I think
+  nextArgType: string;
+  nextExpressionType: any; // This is the next FunctionFormClass
+
+  onAssetAdd: (type: string, content: string) => any;
+  onValueAdd: (argName: string, valueIndex: number) => () => void;
+  onValueChange: (argName: string, valueIndex: number) => (value: any) => void;
+  onValueRemove: (argName: string, valueIndex: number) => () => void;
+}
+
+/*
+  argResolver: props.argResolver;
+  args: props.args;
+  argType: props.argType;
+  argTypeDef: props.argTypeDef;
+  filterGroups: props.filterGroups;
+  context: props.context;
+  expressionIndex: props.expressionIndex;
+  expressionType: props.expressionType;
+  nextArgType: props.nextArgType;
+  nextExpressionType: props.nextExpressionType;
+  onAssetAdd: props.onAssetAdd;
+  onValueAdd: props.onValueAdd;
+  onValueChange: props.onValueChange;
+  onValueRemove: props.onValueRemove;
+}
+*/
+
 export class FunctionForm extends BaseForm {
+  public args: any;
+  public resolve: any;
+
   constructor(props) {
     super({ ...props });
 
@@ -76,7 +121,7 @@ export class FunctionForm extends BaseForm {
     return {};
   }
 
-  render(data = {}) {
+  render(data: FunctionFormRenderProps) {
     const { args, argTypeDef } = data;
 
     // Don't instaniate these until render time, to give the registries a chance to populate.

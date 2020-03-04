@@ -11,9 +11,16 @@ import { interpretAst } from '../../lib/run_interpreter';
 import { modelRegistry, viewRegistry, transformRegistry } from '../../expression_types';
 import { FunctionFormList as Component } from './function_form_list';
 
-import { CanvasElement, FunctionForm } from '../../../types';
+import {
+  PositionedElement,
+  FunctionForm,
+  ExpressionAstExpression,
+  ExpressionAstFunction,
+} from '../../../types';
 
-function normalizeContext(chain) {
+import { FunctionForm as FunctionFormClass } from '../../expression_types/function_form';
+
+function normalizeContext(chain: ExpressionAstFunction[]): ExpressionAstExpression | null {
   if (!Array.isArray(chain) || !chain.length) {
     return null;
   }
@@ -23,59 +30,65 @@ function normalizeContext(chain) {
   };
 }
 
-function getExpression(ast) {
-  return ast != null && ast.type === 'expression' ? toExpression(ast) : ast;
+function getExpression(ast: ExpressionAstExpression) {
+  return toExpression(ast);
 }
 
 function getArgTypeDef(fn) {
   return modelRegistry.get(fn) || viewRegistry.get(fn) || transformRegistry.get(fn);
 }
 
-interface IncomingFunctionFormListProps {
-  element: CanvasElement;
+export interface IncomingFunctionFormListProps {
+  element: PositionedElement;
   newProp: string;
 }
 
-interface OutgoingFunctionFormListProps {
-  functionFormItems: 
+export interface OutgoingFunctionFormListProps {
+  functionFormItems: FunctionForm[];
 }
 
-const functionFormItems = withProps<IncomingFunctionFormListProps, OutgoingFunctionFormListProps>(props => {
-  const selectedElement = props.element;
-  const FunctionFormChain = get(selectedElement, 'ast.chain', []);
+const functionFormItems = withProps<OutgoingFunctionFormListProps, IncomingFunctionFormListProps>(
+  props => {
+    const selectedElement = props.element;
+    const FunctionFormChain = get<PositionedElement, PositionedElement['ast']['chain']>(
+      selectedElement,
+      'ast.chain',
+      []
+    );
 
-  // map argTypes from AST, attaching nextArgType if one exists
-  const FunctionFormListItems = FunctionFormChain.reduce(
-    (acc, argType, i) => {
-      const argTypeDef = getArgTypeDef(argType.function);
-      const prevContext = normalizeContext(acc.context);
-      const nextArg = FunctionFormChain[i + 1] || null;
+    // map argTypes from AST, attaching nextArgType if one exists
+    const FunctionFormListItems = FunctionFormChain.reduce(
+      (acc, argType, i) => {
+        const argTypeDef = getArgTypeDef(argType.function) as FunctionFormClass;
+        const prevContext = normalizeContext(acc.context);
+        const nextArg = FunctionFormChain[i + 1] || null;
 
-      // filter out argTypes that shouldn't be in the sidebar
-      if (argTypeDef) {
-        // wrap each part of the chain in ArgType, passing in the previous context
-        const component = {
-          args: argType.arguments,
-          argType: argType.function,
-          argTypeDef: argTypeDef,
-          argResolver: argAst => interpretAst(argAst, prevContext),
-          contextExpression: getExpression(prevContext),
-          expressionIndex: i, // preserve the index in the AST
-          nextArgType: nextArg && nextArg.function,
-        };
+        // filter out argTypes that shouldn't be in the sidebar
+        if (argTypeDef) {
+          // wrap each part of the chain in ArgType, passing in the previous context
+          const component = {
+            args: argType.arguments,
+            argType: argType.function,
+            argTypeDef,
+            argResolver: (argAst: ExpressionAstExpression) => interpretAst(argAst, prevContext),
+            contextExpression: prevContext ? getExpression(prevContext) : undefined,
+            expressionIndex: i, // preserve the index in the AST
+            nextArgType: nextArg && nextArg.function,
+          };
 
-        acc.mapped.push(component);
-      }
+          acc.mapped.push(component);
+        }
 
-      acc.context = acc.context.concat(argType);
-      return acc;
-    },
-    { mapped: [], context: [] }
-  );
+        acc.context = acc.context.concat(argType);
+        return acc;
+      },
+      { mapped: [] as FunctionForm[], context: [] as ExpressionAstFunction[] }
+    );
 
-  return {
-    functionFormItems: FunctionFormListItems.mapped,
-  };
-});
+    return {
+      functionFormItems: FunctionFormListItems.mapped,
+    };
+  }
+);
 
-export const FunctionFormList = compose(functionFormItems)(Component);
+export const FunctionFormList = functionFormItems(Component);

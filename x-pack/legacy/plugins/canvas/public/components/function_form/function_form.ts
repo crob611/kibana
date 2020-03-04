@@ -11,9 +11,11 @@ import { FunctionUnknown } from './function_unknown';
 import { FunctionFormContextPending } from './function_form_context_pending';
 import { FunctionFormContextError } from './function_form_context_error';
 
+import { FunctionFormOutgoingProps } from './';
+
 // helper to check the state of the passed in expression type
-function checkState(state) {
-  return ({ context, expressionType }) => {
+function checkState(state: string) {
+  return ({ context, expressionType }: FunctionFormOutgoingProps) => {
     const matchState = !context || context.state === state;
     return expressionType && expressionType.requiresContext && matchState;
   };
@@ -22,17 +24,21 @@ function checkState(state) {
 // alternate render paths based on expression state
 const branches = [
   // if no expressionType was provided, render the ArgTypeUnknown component
-  branch(props => !props.expressionType, renderComponent(FunctionUnknown)),
+  branch(
+    (props: FunctionFormOutgoingProps) => !props.expressionType,
+    renderComponent(FunctionUnknown)
+  ),
   // if the expressionType is in a pending state, render ArgTypeContextPending
   branch(checkState('pending'), renderComponent(FunctionFormContextPending)),
   // if the expressionType is in an error state, render ArgTypeContextError
   branch(checkState('error'), renderComponent(FunctionFormContextError)),
 ];
 
-export const FunctionForm = compose(...branches)(FunctionFormComponent);
+export const FunctionForm = compose<FunctionFormOutgoingProps, FunctionFormOutgoingProps>(
+  ...branches
+)(FunctionFormComponent);
 
 FunctionForm.propTypes = {
   expressionType: PropTypes.object,
   context: PropTypes.object,
-  expressionType: PropTypes.object,
 };

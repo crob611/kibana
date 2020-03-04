@@ -11,7 +11,7 @@ export interface FunctionForm {
   argType: string;
   argTypeDef: any; // This is is the View. We need to come up with a type for this
   argResolver: (argAst: ExpressionAstExpression) => Promise<any>;
-  contextExpression: string;
+  contextExpression?: string;
   expressionIndex: number;
   nextArgType: string;
 }

@@ -8,7 +8,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FunctionForm } from '../function_form';
 
-export const FunctionFormList = ({ functionFormItems }) => {
+import { OutgoingFunctionFormListProps } from './';
+
+export const FunctionFormList: React.FunctionComponent<OutgoingFunctionFormListProps> = ({
+  functionFormItems,
+}) => {
   const argTypeComponents = functionFormItems.map(functionFormProps => {
     return (
       <FunctionForm
