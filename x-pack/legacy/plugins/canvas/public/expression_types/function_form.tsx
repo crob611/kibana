@@ -12,7 +12,7 @@ import { ArgAddPopover } from '../components/arg_add_popover';
 import { SidebarSection } from '../components/sidebar/sidebar_section';
 import { SidebarSectionTitle } from '../components/sidebar/sidebar_section_title';
 import { BaseForm } from './base_form';
-import { Arg } from './arg';
+import { Arg, FunctionFormArgumentSpec } from './arg';
 
 import {
   FunctionForm as FunctionFormType,
@@ -28,56 +28,54 @@ interface FunctionFormRenderProps {
   argTypeDef: any; // This is is the View. We need to come up with a type for this
   context: ExpressionContext;
   expressionIndex: number;
-  expressionType: any; // This is the same view I think
+  expressionType: FunctionFormType; // This is the same view I think
   nextArgType: string;
-  nextExpressionType: any; // This is the next FunctionFormClass
+  nextExpressionType: FunctionFormType; // This is the next FunctionFormClass
 
   onAssetAdd: (type: string, content: string) => any;
-  onValueAdd: (argName: string, valueIndex: number) => () => void;
+  onValueAdd: (argName: string, value: any) => () => void;
   onValueChange: (argName: string, valueIndex: number) => (value: any) => void;
   onValueRemove: (argName: string, valueIndex: number) => () => void;
 }
 
-/*
-  argResolver: props.argResolver;
-  args: props.args;
-  argType: props.argType;
-  argTypeDef: props.argTypeDef;
-  filterGroups: props.filterGroups;
-  context: props.context;
-  expressionIndex: props.expressionIndex;
-  expressionType: props.expressionType;
-  nextArgType: props.nextArgType;
-  nextExpressionType: props.nextExpressionType;
-  onAssetAdd: props.onAssetAdd;
-  onValueAdd: props.onValueAdd;
-  onValueChange: props.onValueChange;
-  onValueRemove: props.onValueRemove;
+interface AddableArg {
+  arg: Arg;
+  onValueAdd: () => void;
 }
-*/
+
+interface DataArg {
+  arg: Arg | undefined;
+  argValues: ExpressionAstArgument[];
+}
+
+interface ResolvedArg {
+  skipRender?: boolean;
+  label?: string;
+}
 
 export class FunctionForm extends BaseForm {
-  public args: any;
-  public resolve: any;
+  public args: FunctionFormArgumentSpec[];
+  public resolve: (props: FunctionFormRenderProps) => Record<string, any>;
 
   constructor(props) {
     super({ ...props });
 
     this.args = props.args || [];
-    this.resolve = props.resolve || (() => ({}));
+    this.resolve = props.resolve || (_args => ({}));
   }
 
-  renderArg(props, dataArg) {
+  renderArg(props: FunctionFormRenderProps, dataArg: DataArg & ResolvedArg) {
     const { onValueRemove, onValueChange, ...passedProps } = props;
     const { arg, argValues, skipRender, label } = dataArg;
     const { argType, expressionIndex } = passedProps;
 
     // TODO: show some information to the user than an argument was skipped
     if (!arg || skipRender) {
+      console.log('skipping render', skipRender);
       return null;
     }
 
-    const renderArgWithProps = (argValue, valueIndex) =>
+    const renderArgWithProps = (argValue: ExpressionAstArgument, valueIndex: number) =>
       arg.render({
         key: `${argType}-${expressionIndex}-${arg.name}-${valueIndex}`,
         ...passedProps,
@@ -99,7 +97,7 @@ export class FunctionForm extends BaseForm {
   }
 
   // TODO: Argument adding isn't very good, we should improve this UI
-  getAddableArg(props, dataArg) {
+  getAddableArg(props: FunctionFormRenderProps, dataArg: DataArg & ResolvedArg) {
     const { onValueAdd } = props;
     const { arg, argValues, skipRender } = dataArg;
 
@@ -116,7 +114,7 @@ export class FunctionForm extends BaseForm {
     return { arg, onValueAdd: onValueAdd(arg.name, value) };
   }
 
-  resolveArg() {
+  resolveArg(dataArg: DataArg, props: FunctionFormRenderProps): ResolvedArg {
     // basically a no-op placeholder
     return {};
   }
@@ -134,7 +132,7 @@ export class FunctionForm extends BaseForm {
     // get a mapping of arg values from the expression and from the renderable's schema
     const argNames = uniq(argInstances.map(arg => arg.name).concat(Object.keys(args)));
     const dataArgs = argNames.map(argName => {
-      const arg = argInstances.find(arg => arg.name === argName);
+      const arg = argInstances.find(argInstance => argInstance.name === argName);
 
       // if arg is not multi, only preserve the last value found
       // otherwise, leave the value alone (including if the arg is not defined)
@@ -152,7 +150,9 @@ export class FunctionForm extends BaseForm {
       const resolvedDataArgs = dataArgs.map(d => ({ ...d, ...this.resolveArg(d, props) }));
 
       const argumentForms = compact(resolvedDataArgs.map(d => this.renderArg(props, d)));
-      const addableArgs = compact(resolvedDataArgs.map(d => this.getAddableArg(props, d)));
+      const addableArgs = resolvedDataArgs
+        .map(d => this.getAddableArg(props, d))
+        .filter((a): a is AddableArg => a !== null && a.arg !== undefined);
 
       if (!addableArgs.length && !argumentForms.length) {
         return null;

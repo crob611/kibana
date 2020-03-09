@@ -9,7 +9,7 @@ import { pick } from 'lodash';
 import { ArgForm } from '../components/arg_form';
 import { argumentUIRegistry, ArgumentUI } from './argument_ui';
 
-interface FunctionFormArgumentSpec {
+export interface FunctionFormArgumentSpec {
   argType: string;
   multi: boolean;
   required: boolean;

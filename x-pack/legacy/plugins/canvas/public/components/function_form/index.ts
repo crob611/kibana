@@ -27,7 +27,22 @@ import { FunctionForm as Component } from './function_form';
 
 import { FunctionForm as FunctionFormType } from '../../expression_types/function_form';
 
-import { State, FunctionForm as FunctionFormProps, CanvasElement } from '../../../types';
+import {
+  State,
+  CanvasElement,
+  ExpressionAstArgument,
+  ExpressionAstExpression,
+} from '../../../types';
+
+interface FunctionFormProps {
+  args: Record<string, ExpressionAstArgument[]>;
+  argType: string;
+  argTypeDef: any; // This is is the View. We need to come up with a type for this
+  argResolver: (argAst: ExpressionAstExpression) => Promise<any>;
+  contextExpression?: string;
+  expressionIndex: number;
+  nextArgType: string;
+}
 
 const mapStateToProps = (state: State, { expressionIndex }: FunctionFormProps) => ({
   context: getContextForIndex(state, expressionIndex),
@@ -113,7 +128,9 @@ const mergeProps = (
     updateContext: updateContext(element),
     //expressionType: findExpressionType(argType),
     expressionType: argTypeDef as FunctionFormType,
-    nextExpressionType: nextArgType ? findExpressionType(nextArgType) : nextArgType,
+    nextExpressionType: nextArgType
+      ? (findExpressionType(nextArgType) as FunctionFormType)
+      : nextArgType,
     onValueChange: setArgument(element, pageId),
     onValueAdd: addArgument(element, pageId),
     onValueRemove: deleteArgument(element, pageId),

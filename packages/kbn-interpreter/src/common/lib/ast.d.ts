@@ -32,5 +32,5 @@ export interface Ast {
   chain: ExpressionFunctionAST[];
 }
 
-export declare function fromExpression(expression: string): Ast;
+export declare function fromExpression(expression: string, type: string): Ast;
 export declare function toExpression(astObj: Ast, type?: string): string;

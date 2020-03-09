@@ -8,19 +8,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FunctionFormOutgoingProps } from './';
 
-import {ExpressionAstArgument} from '../../types'
-
 export const FunctionFormComponent: React.FunctionComponent<FunctionFormOutgoingProps> = props => {
   const passedProps = {
-    args: Record<string, ExpressionAstArgument[]>;
-    argType: string;
-    argTypeDef: any; // This is is the View. We need to come up with a type for this
-    argResolver: (argAst: ExpressionAstExpression) => Promise<any>;
-    contextExpression?: string;
-    expressionIndex: number;
-    nextArgType: string;
-
-
     argResolver: props.argResolver,
     args: props.args,
     argType: props.argType,
