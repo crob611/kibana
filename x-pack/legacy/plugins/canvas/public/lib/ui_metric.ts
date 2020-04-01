@@ -4,10 +4,12 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import {
-  createUiStatsReporter,
-  METRIC_TYPE,
-} from '../../../../../../src/legacy/core_plugins/ui_metric/public';
+//import {
+//  createUiStatsReporter,
+//  METRIC_TYPE,
+//} from '../../../../../../src/legacy/core_plugins/ui_metric/public';
 
-export const trackCanvasUiMetric = createUiStatsReporter('canvas');
+//export const trackCanvasUiMetric = createUiStatsReporter('canvas');
+const METRIC_TYPE = 'SOME CONST';
+export const trackCanvasUiMetric = () => undefined;
 export { METRIC_TYPE };

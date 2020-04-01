@@ -17,11 +17,32 @@ import './legacy_plugin_support';
 // load application code
 import 'uiExports/canvas';
 
+import { npSetup, npStart } from 'ui/new_platform';
+
 import { PluginInitializerContext } from '../../../../../src/core/public';
 import { plugin } from './';
-import { getCoreStart, getStartPlugins, getSetupPlugins, getCoreSetup } from './legacy';
+//import { getCoreStart, getStartPlugins, getSetupPlugins, getCoreSetup } from './legacy';
 const pluginInstance = plugin({} as PluginInitializerContext);
 
 // Setup and Startup the plugin
-export const setup = pluginInstance.setup(getCoreSetup(), getSetupPlugins());
-export const start = pluginInstance.start(getCoreStart(), getStartPlugins());
+
+const shimSetupPlugins = {
+  expressions: npSetup.plugins.expressions,
+  home: npSetup.plugins.home,
+};
+
+const shimStartPlugins = {
+  ...npStart.plugins,
+  expressions: npStart.plugins.expressions,
+  __LEGACY: {
+    // ToDo: Copy directly into canvas
+    absoluteToParsedUrl: () => null,
+    // ToDo: Copy directly into canvas
+    formatMsg: () => null,
+    // ToDo: Won't be a part of New Platform. Will need to handle internally
+    trackSubUrlForApp: () => null,
+  },
+};
+
+export const setup = pluginInstance.setup(npSetup.core, shimSetupPlugins);
+export const start = pluginInstance.start(npStart.core, shimStartPlugins);

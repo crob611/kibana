@@ -6,11 +6,11 @@
 
 import { axisConfig } from './axis_config';
 import { datacolumn } from './datacolumn';
-import { dateFormat } from './date_format';
+//import { dateFormat } from './date_format';
 import { filterGroup } from './filter_group';
 import { imageUpload } from './image_upload';
 import { number } from './number';
-import { numberFormat } from './number_format';
+//import { numberFormat } from './number_format';
 import { palette } from './palette';
 import { percentage } from './percentage';
 import { range } from './range';
@@ -23,11 +23,11 @@ import { toggle } from './toggle';
 export const args = [
   axisConfig,
   datacolumn,
-  dateFormat,
+  //dateFormat,
   filterGroup,
   imageUpload,
   number,
-  numberFormat,
+  //numberFormat,
   palette,
   percentage,
   range,

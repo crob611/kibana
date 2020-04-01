@@ -5,7 +5,6 @@
  */
 
 import React from 'react';
-import { npStart } from 'ui/new_platform';
 import { EuiFlyout, EuiFlyoutHeader, EuiFlyoutBody, EuiTitle } from '@elastic/eui';
 import {
   SavedObjectFinderUi,
@@ -20,13 +19,14 @@ export interface Props {
   onClose: () => void;
   onSelect: (id: string, embeddableType: string) => void;
   availableEmbeddables: string[];
+  getEmbeddableFactories: any;
   savedObjects: CoreStart['savedObjects'];
   uiSettings: CoreStart['uiSettings'];
 }
 
 export class AddEmbeddableFlyout extends React.Component<Props> {
   onAddPanel = (id: string, savedObjectType: string, name: string) => {
-    const embeddableFactories = npStart.plugins.embeddable.getEmbeddableFactories();
+    const embeddableFactories = this.props.getEmbeddableFactories();
 
     // Find the embeddable type from the saved object type
     const found = Array.from(embeddableFactories).find(embeddableFactory => {
@@ -42,7 +42,7 @@ export class AddEmbeddableFlyout extends React.Component<Props> {
   };
 
   render() {
-    const embeddableFactories = npStart.plugins.embeddable.getEmbeddableFactories();
+    const embeddableFactories = this.props.getEmbeddableFactories();
 
     const availableSavedObjects = Array.from(embeddableFactories)
       .filter(factory => {

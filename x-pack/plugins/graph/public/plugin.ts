@@ -63,6 +63,7 @@ export class GraphPlugin
     const config = this.initializerContext.config.get();
 
     initAngularBootstrap();
+    console.log('graph', core);
     core.application.register({
       id: 'graph',
       title: 'Graph',

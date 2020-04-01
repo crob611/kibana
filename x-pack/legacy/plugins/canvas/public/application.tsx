@@ -24,9 +24,11 @@ import { initRegistries, populateRegistries, destroyRegistries } from './registr
 import { getDocumentationLinks } from './lib/documentation_links';
 // @ts-ignore untyped component
 import { HelpMenu } from './components/help_menu/help_menu';
-import { createStore } from './store';
+import { createStore, destroy } from './store';
 
 import { CapabilitiesStrings } from '../i18n';
+
+import { init } from './legacy';
 const { ReadOnlyBadge: strings } = CapabilitiesStrings;
 
 export const renderApp = (
@@ -35,6 +37,10 @@ export const renderApp = (
   { element }: AppMountParameters,
   canvasStore: Store
 ) => {
+  const parentNode = element.parentNode;
+
+  element.remove();
+
   ReactDOM.render(
     <KibanaContextProvider services={{ ...plugins, ...coreStart }}>
       <I18nProvider>
@@ -43,9 +49,14 @@ export const renderApp = (
         </Provider>
       </I18nProvider>
     </KibanaContextProvider>,
-    element
+    parentNode
   );
-  return () => ReactDOM.unmountComponentAtNode(element);
+
+  parentNode?.appendChild(element);
+
+  return () => {
+    ReactDOM.unmountComponentAtNode(parentNode);
+  };
 };
 
 export const initializeCanvas = async (
@@ -55,6 +66,9 @@ export const initializeCanvas = async (
   startPlugins: CanvasStartDeps,
   registries: SetupRegistries
 ) => {
+  // init legacy holder
+  init(coreSetup, coreStart, setupPlugins, startPlugins);
+
   // Create Store
   const canvasStore = await createStore(coreSetup, setupPlugins);
 
@@ -100,6 +114,7 @@ export const initializeCanvas = async (
 export const teardownCanvas = (coreStart: CoreStart) => {
   destroyRegistries();
   resetInterpreter();
+  //destroy();
 
   coreStart.chrome.setBadge(undefined);
   coreStart.chrome.setHelpExtension(undefined);

@@ -4,19 +4,19 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import { Chrome } from 'ui/chrome';
-import { CoreSetup, CoreStart, Plugin } from '../../../../../src/core/public';
+import { CoreSetup, CoreStart, Plugin } from 'kibana/public';
 import { HomePublicPluginSetup } from '../../../../../src/plugins/home/public';
 import { initLoadingIndicator } from './lib/loading_indicator';
 import { featureCatalogueEntry } from './feature_catalogue_entry';
 import { ExpressionsSetup, ExpressionsStart } from '../../../../../src/plugins/expressions/public';
+import { EmbeddableStart } from '../../../../../src/plugins/embeddable/public';
 // @ts-ignore untyped local
 import { argTypeSpecs } from './expression_types/arg_types';
 import { transitions } from './transitions';
 import { legacyRegistries } from './legacy_plugin_support';
 import { getPluginApi, CanvasApi } from './plugin_api';
 import { initFunctions } from './functions';
-import { CanvasSrcPlugin } from '../canvas_plugin_src/plugin';
+// import { CanvasSrcPlugin } from '../canvas_plugin_src/plugin';
 export { CoreStart };
 
 /**
@@ -31,11 +31,13 @@ export interface CanvasSetupDeps {
 
 export interface CanvasStartDeps {
   expressions: ExpressionsStart;
-  __LEGACY: {
+  embeddable: EmbeddableStart;
+
+  /*  __LEGACY: {
     absoluteToParsedUrl: (url: string, basePath: string) => any;
     formatMsg: any;
     trackSubUrlForApp: Chrome['trackSubUrlForApp'];
-  };
+  };*/
 }
 
 /**
@@ -83,8 +85,8 @@ export class CanvasPlugin
     canvasApi.addTypes(legacyRegistries.types.getOriginalFns());
 
     // TODO: Do we want to completely move canvas_plugin_src into it's own plugin?
-    const srcPlugin = new CanvasSrcPlugin();
-    srcPlugin.setup(core, { canvas: canvasApi });
+    //const srcPlugin = new CanvasSrcPlugin();
+    //srcPlugin.setup(core, { canvas: canvasApi });
 
     // Register core canvas stuff
     canvasApi.addFunctions(initFunctions({ typesRegistry: plugins.expressions.__LEGACY.types }));

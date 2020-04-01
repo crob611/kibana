@@ -13,7 +13,8 @@ let store;
 
 export function createStore(initialState) {
   if (typeof store !== 'undefined') {
-    throw new Error('Redux store can only be initialized once');
+    return store;
+    //throw new Error('Redux store can only be initialized once');
   }
 
   if (!isPlainObject(initialState)) {
@@ -27,4 +28,8 @@ export function createStore(initialState) {
 
 export function getState() {
   return store.getState();
+}
+
+export function destroy() {
+  store = undefined;
 }

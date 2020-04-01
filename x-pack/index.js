@@ -50,7 +50,7 @@ module.exports = function(kibana) {
     beats(kibana),
     apm(kibana),
     maps(kibana),
-    canvas(kibana),
+    //canvas(kibana),
     indexManagement(kibana),
     indexLifecycleManagement(kibana),
     infra(kibana),

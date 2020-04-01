@@ -16,7 +16,7 @@ import { horizontalProgressPill } from './horizontal_progress_pill';
 import { image } from './image';
 import { lineChart } from './line_chart';
 import { markdown } from './markdown';
-import { metric } from './metric';
+//import { metric } from './metric';
 import { pie } from './pie';
 import { plot } from './plot';
 import { progressGauge } from './progress_gauge';
@@ -44,7 +44,7 @@ export const elementSpecs = applyElementStrings([
   horizontalProgressPill,
   lineChart,
   markdown,
-  metric,
+  //metric,
   pie,
   plot,
   progressGauge,

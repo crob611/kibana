@@ -7,7 +7,7 @@
 import { ExpressionsSetup } from 'src/plugins/expressions/public';
 import { asset } from './asset';
 import { filtersFunctionFactory } from './filters';
-import { timelion } from './timelion';
+//import { timelion } from './timelion';
 import { toFunctionFactory } from './to';
 
 export interface InitializeArguments {
@@ -15,5 +15,10 @@ export interface InitializeArguments {
 }
 
 export function initFunctions(initialize: InitializeArguments) {
-  return [asset, filtersFunctionFactory(initialize), timelion, toFunctionFactory(initialize)];
+  return [
+    asset,
+    filtersFunctionFactory(initialize),
+    //timelion,
+    toFunctionFactory(initialize),
+  ];
 }

@@ -14,16 +14,16 @@ export function canvas(kibana) {
     id: CANVAS_APP,
     configPrefix: 'xpack.canvas',
     require: ['kibana', 'elasticsearch', 'xpack_main', 'interpreter'],
-    publicDir: resolve(__dirname, 'public'),
+    //publicDir: resolve(__dirname, 'public'),
     uiExports: {
-      app: {
+      /*app: {
         title: 'Canvas',
         description: 'Data driven workpads',
         icon: 'plugins/canvas/icon.svg',
         euiIconType: 'canvasApp',
         main: 'plugins/canvas/legacy_start',
         category: DEFAULT_APP_CATEGORIES.analyze,
-      },
+      },*/
       interpreter: ['plugins/canvas/legacy_register_interpreter'],
       styleSheetPaths: resolve(__dirname, 'public/style/index.scss'),
       hacks: [
