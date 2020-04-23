@@ -134,7 +134,7 @@ function wrapHistoryInstance(history) {
   return wrappedHistory;
 }
 
-const instances = new WeakMap();
+let instances = new WeakMap();
 
 const getHistoryInstance = win => {
   // if no window object, use memory module
@@ -157,4 +157,8 @@ export const historyProvider = (win = getWindow()) => {
   instances.set(win, wrappedInstance);
 
   return wrappedInstance;
+};
+
+export const destroyHistory = () => {
+  instances = new WeakMap();
 };

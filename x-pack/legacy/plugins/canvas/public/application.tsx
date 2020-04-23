@@ -36,6 +36,9 @@ import { CapabilitiesStrings } from '../i18n';
 
 import { startServices, stopServices, services } from './services';
 
+import { destroyHistory } from './lib/history_provider';
+import { destroyRouter } from './lib/router_provider';
+
 import './style/index.scss';
 
 const { ReadOnlyBadge: strings } = CapabilitiesStrings;
@@ -159,4 +162,7 @@ export const teardownCanvas = (coreStart: CoreStart, startPlugins: CanvasStartDe
 
   coreStart.chrome.setBadge(undefined);
   coreStart.chrome.setHelpExtension(undefined);
+
+  destroyHistory();
+  destroyRouter();
 };

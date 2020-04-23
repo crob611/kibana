@@ -114,3 +114,8 @@ export function routerProvider(routes) {
 
   return router;
 }
+
+export function destroyRouter() {
+  console.log('destroying router');
+  router = undefined;
+}

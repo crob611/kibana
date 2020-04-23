@@ -5,7 +5,7 @@
  */
 
 //import { Chrome } from 'ui/chrome';
-import { CoreSetup, CoreStart, Plugin } from '../../../../../src/core/public';
+import { CoreSetup, CoreStart, Plugin, AppMountParameters } from '../../../../../src/core/public';
 import { HomePublicPluginSetup } from '../../../../../src/plugins/home/public';
 import { initLoadingIndicator } from './lib/loading_indicator';
 import { featureCatalogueEntry } from './feature_catalogue_entry';
@@ -69,11 +69,11 @@ export class CanvasPlugin
     const { api: canvasApi, registries } = getPluginApi(plugins.expressions);
 
     this.srcPlugin.setup(core, { canvas: canvasApi });
-
+    console.log('wut');
     core.application.register({
       id: 'canvas',
       title: 'Canvas App',
-      async mount(context, params) {
+      async mount(params: AppMountParameters) {
         // Load application bundle
         const { renderApp, initializeCanvas, teardownCanvas } = await import('./application');
 
