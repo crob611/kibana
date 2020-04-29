@@ -35,7 +35,9 @@ import { init as initStatsReporter } from './lib/ui_metric';
 import { CapabilitiesStrings } from '../i18n';
 
 import { startServices, stopServices, services } from './services';
+// @ts-ignore Untyped local
 import { destroyHistory } from './lib/history_provider';
+// @ts-ignore Untyped local
 import { stopRouter } from './lib/router_provider';
 
 import './style/index.scss';
