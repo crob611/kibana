@@ -5,6 +5,14 @@
  */
 
 import { PluginInitializerContext } from 'kibana/public';
-import { CanvasPlugin } from '../../../legacy/plugins/canvas/public/plugin';
+import { CoreStart } from '../../../../src/core/public';
+import { CanvasServices } from './services';
+import { CanvasPlugin, CanvasStartDeps } from './plugin';
+
+export interface WithKibanaProps {
+  kibana: {
+    services: CoreStart & CanvasStartDeps & { canvas: CanvasServices };
+  };
+}
 
 export const plugin = (initializerContext: PluginInitializerContext) => new CanvasPlugin();
