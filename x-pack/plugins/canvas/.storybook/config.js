@@ -67,7 +67,7 @@ addParameters({
     theme: create({
       base: 'light',
       brandTitle: 'Canvas Storybook',
-      brandUrl: 'https://github.com/elastic/kibana/tree/master/x-pack/legacy/plugins/canvas',
+      brandUrl: 'https://github.com/elastic/kibana/tree/master/x-pack/plugins/canvas',
     }),
     showPanel: true,
     isFullscreen: false,

@@ -9,7 +9,7 @@ import '../../../legacy/plugins/infra/types/eui';
 // EUIBasicTable
 import '../../../legacy/plugins/reporting/public/components/report_listing';
 // .svg
-import '../../../legacy/plugins/canvas/types/webpack';
+import '../../../plugins/canvas/types/webpack';
 
 // Allow unknown properties in an object
 export type AllowUnknownProperties<T> = T extends Array<infer X>
