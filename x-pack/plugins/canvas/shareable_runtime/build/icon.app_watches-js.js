@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.app_watches-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/app_watches.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/app_watches.js ***!
+  \****************************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconAppWatches = function EuiIconAppWatches(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 32,\n    height: 32,\n    viewBox: \"0 0 32 32\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M9.74 7.73l-1.5-1.32a13 13 0 0 0 0 17.19l1.5-1.32a11 11 0 0 1 0-14.54v-.01z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M6.51 3.66L5 2.34c-6.377 7.24-6.377 18.09 0 25.33l1.5-1.32C.792 19.867.792 10.153 6.5 3.67l.01-.01zm17.25 2.75l-1.5 1.32a11 11 0 0 1 0 14.54l1.5 1.32a13 13 0 0 0 0-17.19v.01z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M27 2.34l-1.5 1.32c5.708 6.483 5.708 16.197 0 22.68l1.5 1.33c6.377-7.24 6.377-18.09 0-25.33z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillSecondary\",\n    d: \"M21 15a5 5 0 1 0-6 4.9V31h2V19.9a5 5 0 0 0 4-4.9zm-5 3a3 3 0 1 1 0-6 3 3 0 0 1 0 6z\"\n  }));\n};\n\nvar icon = EuiIconAppWatches;\nEuiIconAppWatches.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconAppWatches\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/app_watches.js?");
+
+/***/ })
+
+}]);

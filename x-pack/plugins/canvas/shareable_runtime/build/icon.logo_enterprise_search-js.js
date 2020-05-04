@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.logo_enterprise_search-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/logo_enterprise_search.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/logo_enterprise_search.js ***!
+  \***************************************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconLogoEnterpriseSearch = function EuiIconLogoEnterpriseSearch(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 32,\n    height: 32,\n    viewBox: \"0 0 32 32\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"g\", {\n    fill: \"none\",\n    fillRule: \"evenodd\"\n  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    fill: \"#00BFB3\",\n    d: \"M16 0c-2.918 0-5.645.794-8 2.158 4.777 2.768 8 7.923 8 13.842 0 5.919-3.223 11.074-8 13.842A15.907 15.907 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    fill: \"#FEC514\",\n    d: \"M8 24h2.222A12.996 12.996 0 0 0 13 16c0-2.935-1.012-5.744-2.778-8H8a8 8 0 0 0 0 16\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillNegative\",\n    d: \"M16 8h-2.152A15.877 15.877 0 0 1 16 16c0 2.918-.786 5.647-2.152 8H16a8 8 0 0 0 0-16\"\n  })));\n};\n\nvar icon = EuiIconLogoEnterpriseSearch;\nEuiIconLogoEnterpriseSearch.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconLogoEnterpriseSearch\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/logo_enterprise_search.js?");
+
+/***/ })
+
+}]);

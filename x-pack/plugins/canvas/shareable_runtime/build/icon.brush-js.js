@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.brush-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/brush.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/brush.js ***!
+  \**********************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconBrush = function EuiIconBrush(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 16,\n    height: 16,\n    viewBox: \"0 0 16 16\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M11.993 8.17c0 .83-.673 1.507-1.499 1.507H5.498A1.505 1.505 0 0 1 3.999 8.17V6.662h7.994V8.17zm-2.998 5.998c0 .455-.448.827-.999.827-.55 0-1-.372-1-.827v-3.486h2v3.486zM4 5.658V1.005h1.262v4.653H4zm2.261 0V1.005h1.244v4.653H6.26zm2.244 0V1.005h1.235v4.653H8.504zm2.234 0V1.005h1.254v4.653h-1.254zM3.008 0L3 8.17a2.509 2.509 0 0 0 2.498 2.512h.5v3.486c0 1.01.896 1.832 1.998 1.832 1.102 0 1.998-.822 1.998-1.832v-3.486h.5a2.509 2.509 0 0 0 2.498-2.512L13 0H3.008z\"\n  }));\n};\n\nvar icon = EuiIconBrush;\nEuiIconBrush.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconBrush\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/brush.js?");
+
+/***/ })
+
+}]);

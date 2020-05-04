@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.grid-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/grid.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/grid.js ***!
+  \*********************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconGrid = function EuiIconGrid(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 16,\n    height: 16,\n    viewBox: \"0 0 16 16\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M1 5V1h4v4H1zm3-1V2H2v2h2zm2 1V1h4v4H6zm3-1V2H7v2h2zm2 1V1h4v4h-4zm1-1h2V2h-2v2zM1 10V6h4v4H1zm3-1V7H2v2h2zm2 1V6h4v4H6zm3-1V7H7v2h2zm2 1V6h4v4h-4zm3-1V7h-2v2h2zM1 15v-4h4v4H1zm1-1h2v-2H2v2zm4 1v-4h4v4H6zm1-1h2v-2H7v2zm4 1v-4h4v4h-4zm1-1h2v-2h-2v2z\"\n  }));\n};\n\nvar icon = EuiIconGrid;\nEuiIconGrid.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconGrid\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/grid.js?");
+
+/***/ })
+
+}]);

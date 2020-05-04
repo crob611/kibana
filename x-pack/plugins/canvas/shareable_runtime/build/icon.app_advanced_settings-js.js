@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.app_advanced_settings-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/app_advanced_settings.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/app_advanced_settings.js ***!
+  \**************************************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconAppAdvancedSettings = function EuiIconAppAdvancedSettings(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 32,\n    height: 32,\n    viewBox: \"0 0 32 32\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillSecondary\",\n    d: \"M2.909 26.182h1.939v4.848H2.909z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M4.848 16.62V0H2.91v16.62a3.879 3.879 0 1 0 1.94 0zm-.97 5.683a1.94 1.94 0 1 1 0-3.879 1.94 1.94 0 0 1 0 3.879z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillSecondary\",\n    d: \"M14.545 16.485h1.939V31.03h-1.939z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M16.485 6.924V0h-1.94v6.924a3.879 3.879 0 1 0 1.94 0zm-.97 5.682a1.94 1.94 0 1 1 0-3.879 1.94 1.94 0 0 1 0 3.88z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillSecondary\",\n    d: \"M26.182 26.182h1.939v4.848h-1.939z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M28.121 16.62V0h-1.94v16.62a3.879 3.879 0 1 0 1.94 0zm-.97 5.683a1.94 1.94 0 1 1 0-3.879 1.94 1.94 0 0 1 0 3.879z\"\n  }));\n};\n\nvar icon = EuiIconAppAdvancedSettings;\nEuiIconAppAdvancedSettings.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconAppAdvancedSettings\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/app_advanced_settings.js?");
+
+/***/ })
+
+}]);

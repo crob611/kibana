@@ -1,0 +1,15 @@
+(window["webpackJsonpKbnCanvas"] = window["webpackJsonpKbnCanvas"] || []).push([["icon.app_security-js"],{
+
+/***/ "./node_modules/@elastic/eui/es/components/icon/assets/app_security.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@elastic/eui/es/components/icon/assets/app_security.js ***!
+  \*****************************************************************************/
+/*! exports provided: icon */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"icon\", function() { return icon; });\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);\nfunction _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }\n\n\n\nvar EuiIconAppSecurity = function EuiIconAppSecurity(props) {\n  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"svg\", _extends({\n    width: 32,\n    height: 32,\n    viewBox: \"0 0 32 32\",\n    xmlns: \"http://www.w3.org/2000/svg\"\n  }, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    d: \"M14 32l-.36-.14A21.07 21.07 0 0 1 0 12.07V5.44L14 .06l14 5.38v6.63a21.07 21.07 0 0 1-13.64 19.78L14 32zM2 6.82v5.25a19.08 19.08 0 0 0 12 17.77 19.08 19.08 0 0 0 12-17.77V6.82L14 2.2 2 6.82z\"\n  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(\"path\", {\n    className: \"euiIcon__fillSecondary\",\n    d: \"M9 17.83h2V23H9zM11 10.18V7H9v3.18a3 3 0 1 0 2 0zM10 14a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM17 7h2v5.17h-2zM21 17a3 3 0 1 0-4 2.82V23h2v-3.18A3 3 0 0 0 21 17zm-3 1a1 1 0 1 1 0-2 1 1 0 0 1 0 2z\"\n  }));\n};\n\nvar icon = EuiIconAppSecurity;\nEuiIconAppSecurity.__docgenInfo = {\n  \"description\": \"\",\n  \"methods\": [],\n  \"displayName\": \"EuiIconAppSecurity\"\n};\n\n//# sourceURL=webpack://KbnCanvas/./node_modules/@elastic/eui/es/components/icon/assets/app_security.js?");
+
+/***/ })
+
+}]);
