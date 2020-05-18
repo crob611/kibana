@@ -14,6 +14,7 @@ import { AddEmbeddableFlyout, Props } from './flyout';
 import { addElement } from '../../state/actions/elements';
 import { getSelectedPage } from '../../state/selectors/workpad';
 import { EmbeddableTypes } from '../../../canvas_plugin_src/expression_types/embeddable';
+import { openAddPanelFlyout } from '../../../../../../src/plugins/embeddable/public';
 import { WithKibanaProps } from '../../index';
 import { withKibana } from '../../../../../../src/plugins/kibana_react/public';
 

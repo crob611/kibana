@@ -84,6 +84,8 @@ export class AnomalySwimlaneEmbeddable extends Embeddable<
       },
       parent
     );
+
+    console.log(initialInput);
   }
 
   public render(node: HTMLElement) {

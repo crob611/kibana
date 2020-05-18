@@ -10,6 +10,8 @@ import {
   SavedObjectFinderUi,
   SavedObjectMetaData,
 } from '../../../../../../src/plugins/saved_objects/public/';
+
+import { openAddPanelFlyout } from '../../../../../../src/plugins/embeddable/public';
 import { ComponentStrings } from '../../../i18n';
 import { CoreStart } from '../../../../../../src/core/public';
 import { CanvasStartDeps } from '../../plugin';

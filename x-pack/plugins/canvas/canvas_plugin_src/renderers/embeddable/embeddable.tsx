@@ -79,7 +79,14 @@ export const embeddableRendererFactory = (core: CoreStart, plugins: StartDeps) =
           throw new EmbeddableFactoryNotFoundError(embeddableType);
         }
 
-        const embeddableObject = await factory.createFromSavedObject(input.id, input);
+        let embeddableObject;
+
+        try {
+          embeddableObject = await factory.createFromSavedObject(input.id, input);
+        } catch (e) {
+          embeddableObject = await factory.create(input);
+        }
+        //const embeddableObject = await factory.createFromSavedObject(input.id, input);
 
         embeddablesRegistry[uniqueId] = embeddableObject;
         ReactDOM.unmountComponentAtNode(domNode);

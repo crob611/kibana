@@ -23,6 +23,10 @@ import { Popover, ClosePopoverFn } from '../../popover';
 import { AssetManager } from '../../asset_manager';
 import { SavedElementsModal } from '../../saved_elements_modal';
 
+import { openAddPanelFlyout, Container } from '../../../../../../../src/plugins/embeddable/public';
+import { getSavedObjectFinder } from '../../../../../../../src/plugins/saved_objects/public';
+import { WithKibanaProps } from '../../..';
+
 interface CategorizedElementLists {
   [key: string]: ElementSpec[];
 }
@@ -80,12 +84,40 @@ export interface Props {
    * Renders embeddable flyout
    */
   renderEmbedPanel: (onClose: () => void) => JSX.Element;
+  kibana: WithKibanaProps['kibana'];
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
+  addEmbeddable: (pageId, partialElement): DispatchProps['addEmbeddable'] =>
+    dispatch(addElement(pageId, partialElement)),
+});
+
+class DummyContainer extends Container {
+  private addHandler;
+  constructor(input, output, getFactory, parent) {
+    super(input, output, getFactory, parent);
+
+    this.addHandler = input.addHandler;
+  }
+
+  protected getInheritedInput(id: string) {
+    return {};
+  }
+  public type = 'Dummy';
+  public async addNewEmbeddable(type: string, explicitInput) {
+    const savedEmbeddable = await super.addNewEmbeddable(type, explicitInput);
+
+    this.addHandler(savedEmbeddable);
+    
+    return savedEmbeddable;
+  }
 }
 
 export const ElementMenu: FunctionComponent<Props> = ({
   elements,
   addElement,
   renderEmbedPanel,
+  kibana,
 }) => {
   const [isAssetModalVisible, setAssetModalVisible] = useState(false);
   const [isEmbedPanelVisible, setEmbedPanelVisible] = useState(false);
@@ -170,7 +202,47 @@ export const ElementMenu: FunctionComponent<Props> = ({
           className: CONTEXT_MENU_TOP_BORDER_CLASSNAME,
           icon: <EuiIcon type="logoKibana" size="m" />,
           onClick: () => {
-            showEmbedPanel();
+            const dummyContainer = new DummyContainer(
+              {
+                panels: [] as any,
+                id: 'id-placeholder',
+                addHandler: 
+              },
+              {
+                embeddableLoaded: {},
+              },
+              kibana.services.embeddable.getEmbeddableFactory
+            );
+            const getAllowedFactories = () => {
+              const allowedEmbeddableTypes = [
+                'map',
+                'lens',
+                'visualization',
+                'ml_anomaly_swimlane',
+              ];
+              const factories = kibana.services.embeddable.getEmbeddableFactories();
+              const allowedFactories = new Map();
+
+              for (const factory of factories) {
+                if (allowedEmbeddableTypes.includes(factory.type)) {
+                  allowedFactories.set(factory.type, factory);
+                }
+              }
+
+              return allowedFactories.values();
+            };
+            //showEmbedPanel();
+            openAddPanelFlyout({
+              embeddable: dummyContainer,
+              getAllFactories: getAllowedFactories,
+              getFactory: kibana.services.embeddable.getEmbeddableFactory,
+              notifications: kibana.services.notifications,
+              overlays: kibana.services.overlays,
+              SavedObjectFinder: getSavedObjectFinder(
+                kibana.services.savedObjects,
+                kibana.services.uiSettings
+              ),
+            });
             closePopover();
           },
         },

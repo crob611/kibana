@@ -65,6 +65,8 @@ import { timefilterControl } from './timefilterControl';
 import { switchFn } from './switch';
 import { caseFn } from './case';
 
+import { swimlane } from './swimlane';
+
 export const functions = [
   all,
   alterColumn,
@@ -126,4 +128,5 @@ export const functions = [
   timerange,
   switchFn,
   caseFn,
+  swimlane,
 ];
