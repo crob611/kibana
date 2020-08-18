@@ -18,3 +18,8 @@ export * from './applications/fleet/types/ui_extensions';
 
 export { pagePathGetters } from './applications/fleet/constants';
 export { pkgKeyFromPackageInfo } from './applications/fleet/services/pkg_key_from_package_info';
+// Canvas export stuff
+export * from './applications/fleet/sections/epm/components/release_badge';
+export * from './applications/fleet/sections/epm/screens/detail/installation_button';
+export * from './applications/fleet/hooks';
+export * from './applications/fleet/sections/epm/hooks';
