@@ -39,10 +39,13 @@ function usePackageInstall({ notifications }: { notifications: NotificationsStar
         status,
         version,
       };
-      setPackage((prev: PackagesInstall) => ({
-        ...prev,
-        [name]: packageProps,
-      }));
+      setPackage((prev: PackagesInstall) => {
+        console.log('running set Package');
+        return {
+          ...prev,
+          [name]: packageProps,
+        };
+      });
     },
     []
   );

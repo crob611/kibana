@@ -22,3 +22,8 @@ export type { NewPackagePolicy } from './applications/ingest_manager/types';
 export * from './applications/ingest_manager/types/intra_app_route_state';
 
 export { pagePathGetters } from './applications/ingest_manager/constants';
+// Canvas export stuff
+export * from './applications/ingest_manager/sections/epm/components/release_badge';
+export * from './applications/ingest_manager/sections/epm/screens/detail/installation_button';
+export * from './applications/ingest_manager/hooks';
+export * from './applications/ingest_manager/sections/epm/hooks';
