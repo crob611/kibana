@@ -5,7 +5,8 @@
  */
 
 import React, { useContext, useState, useEffect, FunctionComponent } from 'react';
-import { EuiLoadingSpinner } from '@elastic/eui';
+import { createPortal } from 'react-dom';
+import { EuiLoadingSpinner, EuiFlyout, EuiFlyoutBody } from '@elastic/eui';
 import { RouterContext } from '../router';
 import { ComponentStrings } from '../../../i18n/components';
 // @ts-expect-error
@@ -16,6 +17,7 @@ import { list } from '../../lib/template_service';
 import { applyTemplateStrings } from '../../../i18n/templates/apply_strings';
 import { useNotifyService } from '../../services';
 
+import { PackageManager, PackagesTable } from '../add_package_modal';
 interface WorkpadTemplatesProps {
   onClose: () => void;
 }
@@ -26,6 +28,26 @@ const Creating: FunctionComponent<{ name: string }> = ({ name }) => (
     {ComponentStrings.WorkpadTemplates.getCreatingTemplateLabel(name)}
   </div>
 );
+
+const PortalThing = () => {
+  useEffect(() => {
+    const element = document.createElement('div');
+    element.className = 'myclass';
+    const body = document.querySelector('body');
+    body.append(element);
+
+    createPortal(
+      <EuiFlyout onClose={() => null}>
+        <EuiFlyoutBody>
+          <PackagesTable />
+        </EuiFlyoutBody>
+      </EuiFlyout>,
+      element
+    );
+  }, []);
+  return <div />;
+};
+
 export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onClose }) => {
   const router = useContext(RouterContext);
   const [templates, setTemplates] = useState<CanvasTemplate[] | undefined>(undefined);
@@ -71,11 +93,12 @@ export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onC
     return <Creating name={creatingFromTemplateName} />;
   }
 
-  return (
+  return [
     <Component
       onClose={onClose}
       templates={templateProp}
       onCreateFromTemplate={createFromTemplate}
-    />
-  );
+    />,
+    <PortalThing />,
+  ];
 };
