@@ -34,15 +34,24 @@ function usePackageInstall({ notifications }: { notifications: NotificationsStar
   const [packages, setPackage] = useState<PackagesInstall>({});
 
   const setPackageInstallStatus = useCallback(
-    ({ name, status, version }: SetPackageInstallStatusProps) => {
-      const packageProps: PackageInstallItem = {
-        status,
-        version,
-      };
+    (maybePackageStatuses: SetPackageInstallStatusProps | SetPackageInstallStatusProps[]) => {
+      const packageStatuses = Array.isArray(maybePackageStatuses)
+        ? maybePackageStatuses
+        : [maybePackageStatuses];
+
+      const packageInstallState = packageStatuses.reduce((iterator, packageStatus) => {
+        iterator[packageStatus.name] = {
+          status: packageStatus.status,
+          version: packageStatus.version,
+        };
+        return iterator;
+      }, {});
+
       setPackage((prev: PackagesInstall) => {
+        console.log('setting package');
         return {
           ...prev,
-          [name]: packageProps,
+          ...packageInstallState,
         };
       });
     },

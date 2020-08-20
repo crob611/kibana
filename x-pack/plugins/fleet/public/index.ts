@@ -23,3 +23,5 @@ export * from './applications/fleet/sections/epm/components/release_badge';
 export * from './applications/fleet/sections/epm/screens/detail/installation_button';
 export * from './applications/fleet/hooks';
 export * from './applications/fleet/sections/epm/hooks';
+export * from './applications/fleet/sections/epm/screens/detail/readme';
+export * from './applications/fleet/sections/epm/screens/detail/content_collapse';

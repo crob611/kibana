@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useContext, useState, useEffect, FunctionComponent } from 'react';
+import React, { useContext, useState, useEffect, useRef, FunctionComponent } from 'react';
 import { createPortal } from 'react-dom';
 import { EuiLoadingSpinner, EuiFlyout, EuiFlyoutBody } from '@elastic/eui';
 import { RouterContext } from '../router';
@@ -30,22 +30,28 @@ const Creating: FunctionComponent<{ name: string }> = ({ name }) => (
 );
 
 const PortalThing = () => {
-  useEffect(() => {
-    const element = document.createElement('div');
-    element.className = 'myclass';
-    const body = document.querySelector('body');
-    body.append(element);
+  const element = useRef<null | HTMLDivElement>(null);
 
-    createPortal(
+  if (!element.current) {
+    const container = document.createElement('div');
+    const body = document.querySelector('body');
+    body.append(container);
+
+    element.current = container;
+  }
+
+  if (element.current) {
+    return createPortal(
       <EuiFlyout onClose={() => null}>
         <EuiFlyoutBody>
           <PackagesTable />
         </EuiFlyoutBody>
       </EuiFlyout>,
-      element
+      element.current
     );
-  }, []);
-  return <div />;
+  }
+
+  return null;
 };
 
 export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onClose }) => {
@@ -95,10 +101,11 @@ export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onC
 
   return [
     <Component
+      key="component"
       onClose={onClose}
       templates={templateProp}
       onCreateFromTemplate={createFromTemplate}
     />,
-    <PortalThing />,
+    <PortalThing key="portal" />,
   ];
 };
