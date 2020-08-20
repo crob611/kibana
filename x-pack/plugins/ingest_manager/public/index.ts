@@ -25,5 +25,7 @@ export { pagePathGetters } from './applications/ingest_manager/constants';
 // Canvas export stuff
 export * from './applications/ingest_manager/sections/epm/components/release_badge';
 export * from './applications/ingest_manager/sections/epm/screens/detail/installation_button';
+export * from './applications/ingest_manager/sections/epm/screens/detail/readme';
 export * from './applications/ingest_manager/hooks';
 export * from './applications/ingest_manager/sections/epm/hooks';
+export * from './applications/ingest_manager/sections/epm/screens/detail/content_collapse';
