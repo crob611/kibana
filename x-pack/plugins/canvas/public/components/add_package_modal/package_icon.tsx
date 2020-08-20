@@ -10,10 +10,10 @@ import { usePackageIconType } from '../../../../ingest_manager/public/';
 import { PackageListItem } from '.';
 
 interface Props {
-  packageData: PackageListItem;
+  package: PackageListItem;
 }
 
-export const PackageIcon: FC<Props> = ({ packageData }) => {
+export const PackageIcon: FC<Props> = ({ package: packageData }) => {
   const args = {
     icons: packageData.icons,
     packageName: packageData.name,
@@ -22,5 +22,5 @@ export const PackageIcon: FC<Props> = ({ packageData }) => {
 
   const type = usePackageIconType(args);
 
-  return <EuiIcon type={type} size="m" />;
+  return <EuiIcon type={type} size="l" />;
 };

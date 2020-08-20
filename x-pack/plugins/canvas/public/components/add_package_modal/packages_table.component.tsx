@@ -4,35 +4,96 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, ReactElement, FC } from 'react';
 import {
   EuiBasicTable,
   EuiIcon,
   EuiButtonIcon,
   EuiButton,
   EuiAccordion,
+  EuiHorizontalRule,
   EuiFlexGroup,
   EuiFlexItem,
   EuiTitle,
+  EuiSpacer,
 } from '@elastic/eui';
+import {
+  InstallationButton,
+  useGetPackageInstallStatus,
+  useGetPackageInfoByKey,
+  ContentCollapse,
+  Readme,
+} from '../../../../ingest_manager/public/';
+
 import ReactMarkdown from 'react-markdown';
 import { elasticLogo } from '../../../canvas_plugin_src/lib/elastic_logo';
 import { LEFT_ALIGNMENT, RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { markdownRenderers } from './markdown_renderers';
+import { PackageListItem } from '.';
 
-export const PackagesTable = (props) => {
+interface Props {
+  packages: PackageListItem[];
+  iconComponent: (props: { package: PackageListItem }) => ReactElement;
+}
+
+const DetailsBody: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
+  const pkgkey = `${packageData.name}-${packageData.version}`;
+  const { data: packageInfoData, error: packageInfoError, isLoading } = useGetPackageInfoByKey(
+    pkgkey
+  );
+
+  if (isLoading) {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <div>
+      <Readme
+        readmePath={packageInfoData?.response.readme}
+        packageName={packageInfoData?.response.name}
+        version={packageInfoData?.response.version}
+      />
+    </div>
+  );
+};
+
+const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
+  const getPackageInstallStatus = useGetPackageInstallStatus();
+
+  if (!getPackageInstallStatus(packageData.name)) {
+    return null;
+  }
+
+  return (
+    <InstallationButton
+      name={packageData.name}
+      version={packageData.version}
+      title={packageData.title || ''}
+      assets={{
+        kibana: {},
+      }}
+    />
+  );
+};
+
+export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponent }) => {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState({});
 
-  const toggleDetails = (item) => {
+  const toggleDetails = (item: PackageListItem) => {
     const itemIdToExpandedRowMapValues = { ...itemIdToExpandedRowMap };
-    if (itemIdToExpandedRowMapValues[item.id]) {
-      delete itemIdToExpandedRowMapValues[item.id];
+    if (itemIdToExpandedRowMapValues[item.name]) {
+      delete itemIdToExpandedRowMapValues[item.name];
     } else {
-      itemIdToExpandedRowMapValues[item.id] = (
+      itemIdToExpandedRowMapValues[item.name] = <DetailsBody package={item} />;
+
+      /*
         <div>
+
           <EuiTitle size="xxxs">
             <h6>This package will install 4 Canvas Templates and 50 other Kibana assets.</h6>
           </EuiTitle>
+          <EuiHorizontalRule margin="xs" />
+          <EuiSpacer />
           <ReactMarkdown
             renderers={markdownRenderers}
             source={`
@@ -41,43 +102,45 @@ export const PackagesTable = (props) => {
           />
         </div>
       );
+      */
     }
     setItemIdToExpandedRowMap(itemIdToExpandedRowMapValues);
   };
-
-  const packages = [
-    { id: 1, packageName: 'Package 1' },
-    { id: 2, packageName: 'Package 2' },
-  ];
 
   const columns = [
     {
       align: LEFT_ALIGNMENT,
       width: '40px',
       isExpander: true,
-      render: (item) => (
-        <EuiButtonIcon
-          onClick={() => toggleDetails(item)}
-          aria-label={itemIdToExpandedRowMap[item.id] ? 'Collapse' : 'Expand'}
-          iconType={itemIdToExpandedRowMap[item.id] ? 'arrowUp' : 'arrowDown'}
-        />
-      ),
+      render: (item: PackageListItem) => {
+        return (
+          <EuiButtonIcon
+            onClick={() => toggleDetails(item)}
+            aria-label={itemIdToExpandedRowMap[item.name] ? 'Collapse' : 'Expand'}
+            iconType={itemIdToExpandedRowMap[item.name] ? 'arrowUp' : 'arrowDown'}
+          />
+        );
+      },
     },
     {
-      field: 'packageName',
+      field: 'title',
       name: 'Package',
       sortable: true,
       truncateText: true,
-      render: (name: string) => (
-        <span>
-          <EuiIcon type={elasticLogo} size="m" /> {name}
-        </span>
-      ),
+      render: (title: string, packageData: PackageListItem) => {
+        return (
+          <span>
+            <IconComponent package={packageData} /> {title}
+          </span>
+        );
+      },
     },
     {
       align: RIGHT_ALIGNMENT,
       header: false,
-      render: () => <EuiButton iconType={'importAction'}>Install</EuiButton>,
+      render: (packageData: PackageListItem) => {
+        return <InstallButtonWrapper package={packageData} />;
+      },
     },
   ];
 
@@ -85,33 +148,9 @@ export const PackagesTable = (props) => {
     <EuiBasicTable
       columns={columns}
       items={packages}
-      itemId="id"
+      itemId="name"
       isExpandable={true}
       itemIdToExpandedRowMap={itemIdToExpandedRowMap}
     />
-  );
-};
-
-const PackageRow = () => {
-  return (
-    <div>
-      <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
-        <EuiFlexItem grow={false}>
-          <EuiIcon type={elasticLogo} size="m" /> {name}
-        </EuiFlexItem>
-
-        <EuiFlexItem grow={2}>
-          <EuiTitle size="s" className="euiAccordionForm__title">
-            <h3>Webhook</h3>
-          </EuiTitle>
-        </EuiFlexItem>
-
-        <EuiFlexItem grow={false}>
-          <EuiButton iconType={'importAction'} size="s">
-            Install
-          </EuiButton>
-        </EuiFlexItem>
-      </EuiFlexGroup>
-    </div>
   );
 };
