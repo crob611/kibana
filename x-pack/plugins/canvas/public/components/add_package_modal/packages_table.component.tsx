@@ -7,6 +7,7 @@
 import React, { useState, ReactElement, FC } from 'react';
 import {
   EuiBasicTable,
+  EuiCallOut,
   EuiIcon,
   EuiButtonIcon,
   EuiButton,
@@ -48,6 +49,11 @@ const DetailsBody: FC<{ package: PackageListItem }> = ({ package: packageData })
 
   return (
     <div>
+      <EuiCallOut
+        iconType="iInCircle"
+        title="This package contains 1 Canvas Template and 27 other Kibana Assets"
+      />
+
       <Readme
         readmePath={packageInfoData?.response.readme}
         packageName={packageInfoData?.response.name}
