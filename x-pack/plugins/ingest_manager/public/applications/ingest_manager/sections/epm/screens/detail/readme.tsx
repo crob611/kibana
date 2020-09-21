@@ -40,7 +40,8 @@ export function Readme({
 
   return (
     <Fragment>
-      {markdown !== undefined ? (
+      {markdown !== undefined ? null : null}
+      {true === false ? (
         <ContentCollapse>
           <ReactMarkdown
             transformImageUri={handleImageUri}

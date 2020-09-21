@@ -15,6 +15,7 @@ import { useKibana } from '../../../../../../src/plugins/kibana_react/public';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
 import { PackagesTable as PackagesTableContainer } from './packages_table';
 import { EuiThemeProvider } from '../../../../../legacy/common/eui_styled_components';
+import { usePlatformService } from '../../services';
 
 export {
   PackagesGridComponent,
@@ -37,10 +38,10 @@ export interface PackageDetails {
 
 export const PackagesTable: React.FC = () => {
   const kibana = useKibana();
-  console.log('packages table');
+  const platform = usePlatformService();
   return (
     <EuiThemeProvider darkMode={false}>
-      <PackageInstallProvider notifications={kibana.notifications}>
+      <PackageInstallProvider notifications={platform.getNotifications()}>
         <PackagesTableContainer />
       </PackageInstallProvider>
     </EuiThemeProvider>

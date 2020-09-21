@@ -48,7 +48,6 @@ function usePackageInstall({ notifications }: { notifications: NotificationsStar
       }, {});
 
       setPackage((prev: PackagesInstall) => {
-        console.log('setting package');
         return {
           ...prev,
           ...packageInstallState,
