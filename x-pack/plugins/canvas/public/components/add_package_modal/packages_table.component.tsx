@@ -63,7 +63,10 @@ const DetailsBody: FC<{ package: PackageListItem }> = ({ package: packageData })
   );
 };
 
-const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
+const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({
+  package: packageData,
+  onInstallStateChange,
+}) => {
   const getPackageInstallStatus = useGetPackageInstallStatus();
 
   if (!getPackageInstallStatus(packageData.name)) {
@@ -72,6 +75,7 @@ const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packa
 
   return (
     <InstallationButton
+      onInstallStateChange={onInstallStateChange}
       name={packageData.name}
       version={packageData.version}
       title={packageData.title || ''}
@@ -82,7 +86,11 @@ const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packa
   );
 };
 
-export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponent }) => {
+export const PackagesTable: FC<Props> = ({
+  packages,
+  iconComponent: IconComponent,
+  onPackageInstalled,
+}) => {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState({});
 
   const toggleDetails = (item: PackageListItem) => {
@@ -91,24 +99,6 @@ export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponen
       delete itemIdToExpandedRowMapValues[item.name];
     } else {
       itemIdToExpandedRowMapValues[item.name] = <DetailsBody package={item} />;
-
-      /*
-        <div>
-
-          <EuiTitle size="xxxs">
-            <h6>This package will install 4 Canvas Templates and 50 other Kibana assets.</h6>
-          </EuiTitle>
-          <EuiHorizontalRule margin="xs" />
-          <EuiSpacer />
-          <ReactMarkdown
-            renderers={markdownRenderers}
-            source={`
-## This is some markdown. 
-### It should be rendered as such`}
-          />
-        </div>
-      );
-      */
     }
     setItemIdToExpandedRowMap(itemIdToExpandedRowMapValues);
   };
@@ -145,7 +135,9 @@ export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponen
       align: RIGHT_ALIGNMENT,
       header: false,
       render: (packageData: PackageListItem) => {
-        return <InstallButtonWrapper package={packageData} />;
+        return (
+          <InstallButtonWrapper package={packageData} onInstallStateChange={onPackageInstalled} />
+        );
       },
     },
   ];

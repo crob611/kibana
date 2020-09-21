@@ -36,13 +36,13 @@ export interface PackageDetails {
   screenshots: string[];
 }
 
-export const PackagesTable: React.FC = () => {
+export const PackagesTable: React.FC = (props) => {
   const kibana = useKibana();
   const platform = usePlatformService();
   return (
     <EuiThemeProvider darkMode={false}>
       <PackageInstallProvider notifications={platform.getNotifications()}>
-        <PackagesTableContainer />
+        <PackagesTableContainer {...props} />
       </PackageInstallProvider>
     </EuiThemeProvider>
   );

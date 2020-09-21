@@ -15,7 +15,7 @@ import { InstallStatus } from '../../../../ingest_manager/common';
 import { PackageIcon } from './package_icon';
 import { PackageListItem } from '.';
 
-export const PackagesTable: FC<{}> = ({}) => {
+export const PackagesTable: FC<{}> = ({ onPackageInstalled }) => {
   const hasSetInstallStatus = useRef<boolean>(false);
   const setPackageInstallStatus = useSetPackageInstallStatus();
   const getPackageInstallStatus = useGetPackageInstallStatus();
@@ -43,7 +43,11 @@ export const PackagesTable: FC<{}> = ({}) => {
     }
 
     return (
-      <PackagesTableComponent packages={allPackagesRes.response} iconComponent={PackageIcon} />
+      <PackagesTableComponent
+        packages={allPackagesRes.response}
+        iconComponent={PackageIcon}
+        onPackageInstalled={onPackageInstalled}
+      />
     );
   }
   return <div>Packages</div>;

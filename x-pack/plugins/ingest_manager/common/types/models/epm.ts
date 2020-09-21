@@ -36,6 +36,7 @@ export enum KibanaAssetType {
   search = 'search',
   indexPattern = 'index_pattern',
   map = 'map',
+  canvasWorkpadTemplate = 'canvas_workpad_template',
 }
 
 /*
@@ -47,6 +48,7 @@ export enum KibanaSavedObjectType {
   search = 'search',
   indexPattern = 'index-pattern',
   map = 'map',
+  canvasWorkpadTemplate = 'canvas-workpad-template',
 }
 
 export enum ElasticsearchAssetType {
