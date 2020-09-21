@@ -15,9 +15,18 @@ import { ConfirmPackageInstall } from './confirm_package_install';
 type InstallationButtonProps = Pick<PackageInfo, 'assets' | 'name' | 'title' | 'version'> & {
   disabled?: boolean;
   isUpdate?: boolean;
+  onInstallStateChange?: () => void;
 };
 export function InstallationButton(props: InstallationButtonProps) {
-  const { assets, name, title, version, disabled = true, isUpdate = false } = props;
+  const {
+    assets,
+    name,
+    title,
+    version,
+    disabled = true,
+    isUpdate = false,
+    onInstallStateChange,
+  } = props;
   const hasWriteCapabilites = useCapabilities().write;
   const installPackage = useInstallPackage();
   const uninstallPackage = useUninstallPackage();
@@ -34,9 +43,14 @@ export function InstallationButton(props: InstallationButtonProps) {
   }, [isModalVisible]);
 
   const handleClickInstall = useCallback(() => {
-    installPackage({ name, version, title });
+    const installPromise = installPackage({ name, version, title });
+
+    if (onInstallStateChange) {
+      installPromise.then(onInstallStateChange);
+    }
+
     toggleModal();
-  }, [installPackage, name, title, toggleModal, version]);
+  }, [installPackage, name, title, toggleModal, version, onInstallStateChange]);
 
   const handleClickUpdate = useCallback(() => {
     installPackage({ name, version, title, fromUpdate: true });

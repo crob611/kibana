@@ -4,7 +4,14 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useContext, useState, useEffect, useRef, FunctionComponent } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  FunctionComponent,
+  useCallback,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { EuiLoadingSpinner, EuiFlyout, EuiFlyoutBody } from '@elastic/eui';
 import { RouterContext } from '../router';
@@ -29,7 +36,7 @@ const Creating: FunctionComponent<{ name: string }> = ({ name }) => (
   </div>
 );
 
-const PortalThing = () => {
+const PortalThing = ({ onClose, onPackageInstalled }) => {
   const element = useRef<null | HTMLDivElement>(null);
 
   if (!element.current) {
@@ -42,9 +49,9 @@ const PortalThing = () => {
 
   if (element.current) {
     return createPortal(
-      <EuiFlyout onClose={() => null}>
+      <EuiFlyout onClose={onClose}>
         <EuiFlyoutBody>
-          <PackagesTable />
+          <PackagesTable onPackageInstalled={onPackageInstalled} />
         </EuiFlyoutBody>
       </EuiFlyout>,
       element.current
@@ -60,16 +67,22 @@ export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onC
   const [creatingFromTemplateName, setCreatingFromTemplateName] = useState<string | undefined>(
     undefined
   );
+  const [isPackagesVisible, setIsPackagesVisible] = useState<boolean>(false);
+  const showPackages = useCallback(() => setIsPackagesVisible(true), [setIsPackagesVisible]);
+  const hidePackages = useCallback(() => setIsPackagesVisible(false), [setIsPackagesVisible]);
+
+  const fetchTemplates = useCallback(async () => {
+    const fetchedTemplates = await list();
+    setTemplates(applyTemplateStrings(fetchedTemplates));
+  }, [setTemplates]);
+
   const { error } = useNotifyService();
 
   useEffect(() => {
     if (!templates) {
-      (async () => {
-        const fetchedTemplates = await list();
-        setTemplates(applyTemplateStrings(fetchedTemplates));
-      })();
+      fetchTemplates();
     }
-  }, [templates]);
+  }, [templates, fetchTemplates]);
 
   let templateProp: Record<string, CanvasTemplate> = {};
 
@@ -105,7 +118,10 @@ export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onC
       onClose={onClose}
       templates={templateProp}
       onCreateFromTemplate={createFromTemplate}
+      onInstallNew={showPackages}
     />,
-    <PortalThing key="portal" />,
+    isPackagesVisible ? (
+      <PortalThing key="portal" onClose={hidePackages} onPackageInstalled={fetchTemplates} />
+    ) : null,
   ];
 };
