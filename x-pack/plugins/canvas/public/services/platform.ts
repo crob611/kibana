@@ -37,6 +37,7 @@ export const platformServiceFactory: CanvasServiceFactory<PlatformService> = (
   coreStart
 ) => {
   return {
+    getNotifications: () => coreStart.notifications,
     getBasePath: coreStart.http.basePath.get,
     getBasePathInterface: () => coreStart.http.basePath,
     getElasticWebsiteUrl: () => coreStart.docLinks.ELASTIC_WEBSITE_URL,

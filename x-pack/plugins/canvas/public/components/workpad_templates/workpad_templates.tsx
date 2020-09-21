@@ -17,6 +17,7 @@ import {
   EuiTableSortingType,
   Direction,
   SortDirection,
+  EuiButton,
 } from '@elastic/eui';
 import { orderBy } from 'lodash';
 // @ts-ignore untyped local
@@ -202,7 +203,13 @@ export class WorkpadTemplates extends React.PureComponent<
       <Paginate rows={filteredTemplates}>
         {(pagination: PaginateChildProps) => (
           <Fragment>
-            {this.renderSearch()}
+            <EuiFlexGroup>
+              <EuiFlexItem grow={1}>{this.renderSearch()}</EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton onClick={this.props.onInstallNew}>Install New Templates</EuiButton>
+              </EuiFlexItem>
+            </EuiFlexGroup>
+
             <EuiSpacer />
             {this.renderWorkpadTable(pagination)}
           </Fragment>
