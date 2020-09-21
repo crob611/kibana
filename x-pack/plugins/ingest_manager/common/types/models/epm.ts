@@ -27,7 +27,21 @@ export type DetailViewPanelName = 'overview' | 'usages' | 'settings';
 export type ServiceName = 'kibana' | 'elasticsearch';
 export type AssetType = KibanaAssetType | ElasticsearchAssetType | AgentAssetType;
 
+/*
+  Enum mapping of a saved object asset type to how it would appear in a package file path (snake cased)
+*/
 export enum KibanaAssetType {
+  dashboard = 'dashboard',
+  visualization = 'visualization',
+  search = 'search',
+  indexPattern = 'index_pattern',
+  map = 'map',
+}
+
+/*
+ Enum of saved object types that are allowed to be installed 
+*/
+export enum KibanaSavedObjectType {
   dashboard = 'dashboard',
   visualization = 'visualization',
   search = 'search',
@@ -256,7 +270,7 @@ export type NotInstalled<T = {}> = T & {
 export type AssetReference = KibanaAssetReference | EsAssetReference;
 
 export type KibanaAssetReference = Pick<SavedObjectReference, 'id'> & {
-  type: KibanaAssetType;
+  type: KibanaSavedObjectType;
 };
 export type EsAssetReference = Pick<SavedObjectReference, 'id'> & {
   type: ElasticsearchAssetType;
