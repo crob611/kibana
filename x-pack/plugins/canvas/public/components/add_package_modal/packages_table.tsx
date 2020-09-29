@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
 import {
   useGetPackages,
@@ -15,11 +15,21 @@ import { InstallStatus } from '../../../../ingest_manager/common';
 import { PackageIcon } from './package_icon';
 import { PackageListItem } from '.';
 
+const NeedPackagesWrapper: FC<{}> = ({}) => {};
+
 export const PackagesTable: FC<{}> = ({}) => {
   const hasSetInstallStatus = useRef<boolean>(false);
+  const [packageDataCache, setPackageDataCache] = useState({});
   const setPackageInstallStatus = useSetPackageInstallStatus();
   const getPackageInstallStatus = useGetPackageInstallStatus();
   const { data: allPackagesRes, isLoading } = useGetPackages();
+
+  const onGetPackageData = (pkgKey, pkgData) => {
+    if (!packageDataCache[pkgKey]) {
+      const newCache = { ...packageDataCache, [pkgKey]: pkgData };
+      setPackageDataCache(newCache);
+    }
+  };
 
   if (isLoading) {
     return null;
