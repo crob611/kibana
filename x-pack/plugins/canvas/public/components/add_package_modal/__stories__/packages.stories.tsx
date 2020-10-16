@@ -4,6 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+/*
 import { EuiModal } from '@elastic/eui';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -34,12 +35,4 @@ const packages = [
 ];
 
 const onSelect = action('onSelect');
-/*
-storiesOf('components/Packages', module)
-  .add('default', () => <Packages packages={packages} onSelect={onSelect} />)
-  .add('in a modal', () => (
-    <EuiModal onClose={action('onClose')}>
-      <Packages packages={packages} onSelect={onSelect} />
-    </EuiModal>
-  ));
 */

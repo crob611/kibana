@@ -4,26 +4,22 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo, useCallback } from 'react';
 import { PackageInfo, PackageListItem } from '../../../../ingest_manager/common/';
 import { PackageInstallProvider } from '../../../../ingest_manager/public';
-import { PackagesGrid as PackagesGridComponent } from './packages_grid.component';
-import { PackageDetails } from './package_details';
-import { PackageDetails as PackageDetailsComponent } from './package_details.component';
-import { PackagesGrid } from './packages_grid';
 import { useKibana } from '../../../../../../src/plugins/kibana_react/public';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
 import { PackagesTable as PackagesTableContainer } from './packages_table';
-import { EuiThemeProvider } from '../../../../../legacy/common/eui_styled_components';
+import { EuiThemeProvider } from '../../../../xpack_legacy/common';
 import { usePlatformService } from '../../services';
+import {
+  PackageInfoCacheContext,
+  PackageInfoResponse,
+  PackageInfoUpdateCacheContext,
+  CacheContext,
+} from './package_info_cache_context';
 
-export {
-  PackagesGridComponent,
-  PackageDetailsComponent,
-  PackagesGrid,
-  PackagesTableContainer,
-  PackagesTableComponent,
-};
+export { PackagesTableContainer, PackagesTableComponent };
 
 export { PackageListItem, PackageInfo };
 
@@ -36,34 +32,35 @@ export interface PackageDetails {
   screenshots: string[];
 }
 
-export const PackagesTable: React.FC = () => {
+export const PackagesTable: FC = () => {
   const kibana = useKibana();
   const platform = usePlatformService();
+  const [packageInfoCache, setPackageInfoCache] = useState(new Map<string, PackageInfoResponse>());
+  const [packageReadmeCache, setPackageReadmeCache] = useState(new Map<string, string>());
+
+  const cacheUpdater = useCallback(
+    (packageKey: string, response) => {
+      if (!packageInfoCache.get(packageKey)) {
+        const newCache = new Map(packageInfoCache);
+        newCache.set(packageKey, response);
+        setPackageInfoCache(newCache);
+      }
+    },
+    [packageInfoCache, setPackageInfoCache]
+  );
+
   return (
     <EuiThemeProvider darkMode={false}>
       <PackageInstallProvider notifications={platform.getNotifications()}>
-        <PackagesTableContainer />
+        <CacheContext
+          packageInfoCache={packageInfoCache}
+          packageInfoUpdater={cacheUpdater}
+          packageReadmeCache={packageReadmeCache}
+          packageReadmeUpdater={setPackageReadmeCache}
+        >
+          <PackagesTableContainer />
+        </CacheContext>
       </PackageInstallProvider>
     </EuiThemeProvider>
   );
-};
-
-export const PackageManager: React.FC = () => {
-  const kibana = useKibana();
-  return (
-    <PackageInstallProvider notifications={kibana.notifications}>
-      <PackageManagerContent />
-    </PackageInstallProvider>
-  );
-};
-
-export const PackageManagerContent: React.FC<{}> = () => {
-  const [selectedPackage, setSelectedPackage] = useState<PackageListItem | null>(null);
-
-  if (selectedPackage) {
-    const packageKey = `${selectedPackage.name}-${selectedPackage.version}`;
-    return <PackageDetails packageKey={packageKey} />;
-  }
-
-  return <PackagesGrid onSelect={setSelectedPackage} />;
 };
