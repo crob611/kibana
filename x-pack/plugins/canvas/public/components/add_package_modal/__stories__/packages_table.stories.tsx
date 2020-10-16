@@ -4,6 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+/*
 import { EuiModal, EuiFlyout, EuiFlyoutBody } from '@elastic/eui';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -46,3 +47,4 @@ storiesOf('components/PackagesTable', module)
       </EuiFlyout>
     );
   });
+*/

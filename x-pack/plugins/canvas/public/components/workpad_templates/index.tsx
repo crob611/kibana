@@ -24,7 +24,7 @@ import { list } from '../../lib/template_service';
 import { applyTemplateStrings } from '../../../i18n/templates/apply_strings';
 import { useNotifyService } from '../../services';
 
-import { PackageManager, PackagesTable } from '../add_package_modal';
+import { PackagesTable } from '../add_package_modal';
 interface WorkpadTemplatesProps {
   onClose: () => void;
 }

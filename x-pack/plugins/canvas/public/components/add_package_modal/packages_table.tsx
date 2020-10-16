@@ -14,38 +14,26 @@ import {
 import { InstallStatus } from '../../../../ingest_manager/common';
 import { PackageIcon } from './package_icon';
 import { PackageListItem } from '.';
-
-const NeedPackagesWrapper: FC<{}> = ({}) => {};
+import { NeedsPackageInfo } from './needs_package_info';
 
 export const PackagesTable: FC<{}> = ({}) => {
   const hasSetInstallStatus = useRef<boolean>(false);
-  const [packageDataCache, setPackageDataCache] = useState({});
   const setPackageInstallStatus = useSetPackageInstallStatus();
-  const getPackageInstallStatus = useGetPackageInstallStatus();
   const { data: allPackagesRes, isLoading } = useGetPackages();
-
-  const onGetPackageData = (pkgKey, pkgData) => {
-    if (!packageDataCache[pkgKey]) {
-      const newCache = { ...packageDataCache, [pkgKey]: pkgData };
-      setPackageDataCache(newCache);
-    }
-  };
 
   if (isLoading) {
     return null;
   }
 
   if (allPackagesRes) {
-    const installStatuses = allPackagesRes.response
-      //.filter((info) => info.savedObject !== undefined)
-      .map((packageInfo) => ({
-        name: packageInfo.name,
-        version: packageInfo.version,
-        status:
-          packageInfo.savedObject !== undefined
-            ? InstallStatus.installed
-            : InstallStatus.notInstalled,
-      }));
+    const installStatuses = allPackagesRes.response.map((packageInfo) => ({
+      name: packageInfo.name,
+      version: packageInfo.version,
+      status:
+        packageInfo.savedObject !== undefined
+          ? InstallStatus.installed
+          : InstallStatus.notInstalled,
+    }));
 
     if (installStatuses.length > 0 && !hasSetInstallStatus.current) {
       hasSetInstallStatus.current = true;
@@ -53,7 +41,11 @@ export const PackagesTable: FC<{}> = ({}) => {
     }
 
     return (
-      <PackagesTableComponent packages={allPackagesRes.response} iconComponent={PackageIcon} />
+      <PackagesTableComponent
+        packages={allPackagesRes.response}
+        iconComponent={PackageIcon}
+        packageDetailsComponent={NeedsPackageInfo}
+      />
     );
   }
   return <div>Packages</div>;

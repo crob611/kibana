@@ -17,6 +17,8 @@ import {
   EuiFlexItem,
   EuiTitle,
   EuiSpacer,
+  EuiText,
+  EuiLoadingContent,
 } from '@elastic/eui';
 import {
   InstallationButton,
@@ -31,36 +33,59 @@ import { elasticLogo } from '../../../canvas_plugin_src/lib/elastic_logo';
 import { LEFT_ALIGNMENT, RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { markdownRenderers } from './markdown_renderers';
 import { PackageListItem } from '.';
+import { PackageInfoResponse } from './package_info_cache_context';
 
 interface Props {
   packages: PackageListItem[];
   iconComponent: (props: { package: PackageListItem }) => ReactElement;
+  /*
+    Package Details Component should be a wrapper component. 
+    It should accept a packageKey prop and should transfer package info to it's child components
+  */
+  packageDetailsComponent: React.FC<{
+    packageKey: string;
+  }>;
 }
 
-const DetailsBody: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
-  const pkgkey = `${packageData.name}-${packageData.version}`;
-  const { data: packageInfoData, error: packageInfoError, isLoading } = useGetPackageInfoByKey(
-    pkgkey
-  );
+interface DetailsProps {
+  packageInfoResponse?: PackageInfoResponse;
+}
 
-  if (isLoading) {
-    return <div>Loading</div>;
+const DetailsBody: FC<DetailsProps> = ({ packageInfoResponse }) => {
+  if (!packageInfoResponse) {
+    return (
+      <div>
+        <EuiText>
+          {/* simulates a long page of text loading */}
+          <p>
+            <EuiLoadingContent lines={5} />
+          </p>
+          <p>
+            <EuiLoadingContent lines={6} />
+          </p>
+          <p>
+            <EuiLoadingContent lines={4} />
+          </p>
+        </EuiText>
+      </div>
+    );
+  } else if (packageInfoResponse.data) {
+    return (
+      <div>
+        <EuiCallOut
+          iconType="iInCircle"
+          title="This package contains 1 Canvas Template and 27 other Kibana Assets"
+        />
+        <Readme
+          readmePath={packageInfoResponse.data.response.readme}
+          packageName={packageInfoResponse.data.response.name}
+          version={packageInfoResponse.data.response.version}
+        />
+      </div>
+    );
   }
 
-  return (
-    <div>
-      <EuiCallOut
-        iconType="iInCircle"
-        title="This package contains 1 Canvas Template and 27 other Kibana Assets"
-      />
-
-      <Readme
-        readmePath={packageInfoData?.response.readme}
-        packageName={packageInfoData?.response.name}
-        version={packageInfoData?.response.version}
-      />
-    </div>
-  );
+  return <div>Some kind of error</div>;
 };
 
 const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
@@ -82,7 +107,11 @@ const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packa
   );
 };
 
-export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponent }) => {
+export const PackagesTable: FC<Props> = ({
+  packages,
+  iconComponent: IconComponent,
+  packageDetailsComponent: Wrapper,
+}) => {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState({});
 
   const toggleDetails = (item: PackageListItem) => {
@@ -90,25 +119,12 @@ export const PackagesTable: FC<Props> = ({ packages, iconComponent: IconComponen
     if (itemIdToExpandedRowMapValues[item.name]) {
       delete itemIdToExpandedRowMapValues[item.name];
     } else {
-      itemIdToExpandedRowMapValues[item.name] = <DetailsBody package={item} />;
-
-      /*
-        <div>
-
-          <EuiTitle size="xxxs">
-            <h6>This package will install 4 Canvas Templates and 50 other Kibana assets.</h6>
-          </EuiTitle>
-          <EuiHorizontalRule margin="xs" />
-          <EuiSpacer />
-          <ReactMarkdown
-            renderers={markdownRenderers}
-            source={`
-## This is some markdown. 
-### It should be rendered as such`}
-          />
-        </div>
+      const packageKey = `${item.name}-${item.version}`;
+      itemIdToExpandedRowMapValues[item.name] = (
+        <Wrapper packageKey={packageKey}>
+          <DetailsBody />
+        </Wrapper>
       );
-      */
     }
     setItemIdToExpandedRowMap(itemIdToExpandedRowMapValues);
   };

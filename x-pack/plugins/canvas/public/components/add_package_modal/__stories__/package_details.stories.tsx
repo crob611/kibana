@@ -4,6 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+/*
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import React from 'react';
@@ -46,9 +47,4 @@ const packageDetails = {
 };
 
 const onInstall = action('onInstall');
-
-/*
-storiesOf('components/Packages/Details', module).add('default', () => (
-  <PackageDetails packageDetails={packageDetails} onInstall={onInstall} />
-));
 */
