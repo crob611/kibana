@@ -14,7 +14,7 @@ import {
 import { InstallStatus } from '../../../../ingest_manager/common';
 import { PackageIcon } from './package_icon';
 import { PackageListItem } from '.';
-import { NeedsPackageInfo } from './needs_package_info';
+import { NeedsPackageInfoAndReadme } from './needs_package_info';
 
 export const PackagesTable: FC<{}> = ({}) => {
   const hasSetInstallStatus = useRef<boolean>(false);
@@ -44,7 +44,7 @@ export const PackagesTable: FC<{}> = ({}) => {
       <PackagesTableComponent
         packages={allPackagesRes.response}
         iconComponent={PackageIcon}
-        packageDetailsComponent={NeedsPackageInfo}
+        packageDetailsComponent={NeedsPackageInfoAndReadme}
       />
     );
   }

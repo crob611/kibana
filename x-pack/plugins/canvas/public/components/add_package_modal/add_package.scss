@@ -1,0 +1,14 @@
+
+.packageDetail {
+  width: 100%;
+
+  .bottomFade {
+    width: 100%;
+    background-image: linear-gradient(rgba($euiColorLightestShade, 0) 0%, $euiColorLightestShade 100%);
+    position: absolute;
+    margin-top: -$euiSizeXL * 2;
+    height: $euiSizeXL * 2; 
+  }
+
+}
+
