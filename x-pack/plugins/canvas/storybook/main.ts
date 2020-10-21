@@ -23,4 +23,7 @@ if (
 module.exports = {
   stories: ['../**/*.stories.tsx'],
   addons: ['@storybook/addon-actions', '@storybook/addon-knobs', './addon/target/register'],
+  typescript: {
+    reactDocgen: false,
+  },
 };

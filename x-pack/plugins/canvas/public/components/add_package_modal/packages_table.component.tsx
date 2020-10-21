@@ -27,6 +27,7 @@ import {
   ContentCollapse,
   Readme,
 } from '../../../../ingest_manager/public/';
+import { PackageDetail } from './package_detail.component';
 
 import ReactMarkdown from 'react-markdown';
 import { elasticLogo } from '../../../canvas_plugin_src/lib/elastic_logo';
@@ -50,43 +51,6 @@ interface Props {
 interface DetailsProps {
   packageInfoResponse?: PackageInfoResponse;
 }
-
-const DetailsBody: FC<DetailsProps> = ({ packageInfoResponse }) => {
-  if (!packageInfoResponse) {
-    return (
-      <div>
-        <EuiText>
-          {/* simulates a long page of text loading */}
-          <p>
-            <EuiLoadingContent lines={5} />
-          </p>
-          <p>
-            <EuiLoadingContent lines={6} />
-          </p>
-          <p>
-            <EuiLoadingContent lines={4} />
-          </p>
-        </EuiText>
-      </div>
-    );
-  } else if (packageInfoResponse.data) {
-    return (
-      <div>
-        <EuiCallOut
-          iconType="iInCircle"
-          title="This package contains 1 Canvas Template and 27 other Kibana Assets"
-        />
-        <Readme
-          readmePath={packageInfoResponse.data.response.readme}
-          packageName={packageInfoResponse.data.response.name}
-          version={packageInfoResponse.data.response.version}
-        />
-      </div>
-    );
-  }
-
-  return <div>Some kind of error</div>;
-};
 
 const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
   const getPackageInstallStatus = useGetPackageInstallStatus();
@@ -122,7 +86,7 @@ export const PackagesTable: FC<Props> = ({
       const packageKey = `${item.name}-${item.version}`;
       itemIdToExpandedRowMapValues[item.name] = (
         <Wrapper packageKey={packageKey}>
-          <DetailsBody />
+          <PackageDetail />
         </Wrapper>
       );
     }

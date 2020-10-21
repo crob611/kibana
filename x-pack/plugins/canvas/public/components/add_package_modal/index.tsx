@@ -19,7 +19,7 @@ import {
   CacheContext,
 } from './package_info_cache_context';
 
-export { PackagesTableContainer, PackagesTableComponent };
+export { PackagesTableContainer, PackagesTableComponent, PackageInfoResponse };
 
 export { PackageListItem, PackageInfo };
 
@@ -49,6 +49,17 @@ export const PackagesTable: FC = () => {
     [packageInfoCache, setPackageInfoCache]
   );
 
+  const readmeCacheUpdater = useCallback(
+    (packageKey: string, readme: string) => {
+      if (!packageReadmeCache.get(packageKey)) {
+        const newCache = new Map(packageReadmeCache);
+        newCache.set(packageKey, readme);
+        setPackageReadmeCache(newCache);
+      }
+    },
+    [packageInfoCache, setPackageInfoCache]
+  );
+
   return (
     <EuiThemeProvider darkMode={false}>
       <PackageInstallProvider notifications={platform.getNotifications()}>
@@ -56,7 +67,7 @@ export const PackagesTable: FC = () => {
           packageInfoCache={packageInfoCache}
           packageInfoUpdater={cacheUpdater}
           packageReadmeCache={packageReadmeCache}
-          packageReadmeUpdater={setPackageReadmeCache}
+          packageReadmeUpdater={readmeCacheUpdater}
         >
           <PackagesTableContainer />
         </CacheContext>
