@@ -8,7 +8,9 @@ import React, { FC } from 'react';
 import { storiesOf } from '@storybook/react';
 import { PackageDetail } from '../package_detail.component';
 
-const Wrapper: FC = ({ children }) => <div style={{ width: '400px' }}>{children}</div>;
+const Wrapper: FC = ({ children }) => (
+  <div style={{ width: '400px', border: '1px solid black' }}>{children}</div>
+);
 
 const sampleInfo = {
   assets: {
@@ -49,7 +51,7 @@ storiesOf('components/PackagesFlyout/package_details', module)
       <PackageDetail />
     </Wrapper>
   ))
-  .add('loaded', () => (
+  .add('loaded not overflowing', () => (
     <Wrapper>
       <PackageDetail packageInfo={sampleInfo} readme={shortReadme} />
     </Wrapper>
