@@ -1,4 +1,10 @@
-import React, { FC } from 'react';
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License;
+ * you may not use this file except in compliance with the Elastic License.
+ */
+
+import React, { FC, useState, useLayoutEffect, useRef } from 'react';
 import {
   EuiCallOut,
   EuiLoadingContent,
@@ -8,13 +14,12 @@ import {
   EuiButton,
   EuiIcon,
 } from '@elastic/eui';
-import { PackageInfoResponse, PackageInfo } from '.';
+import { PackageInfo } from '.';
 import { Markdown } from '../../../../../../src/plugins/kibana_react/public';
 import './add_package.scss';
 
 interface Props {
   packageInfo?: Pick<PackageInfo, 'assets'>;
-  //assets?: PackageInfo['assets'];
   error?: string;
   readme?: string;
 }
@@ -44,10 +49,15 @@ const PackageDetailLoading: FC = () => (
   </div>
 );
 
+const OverflowHeight = 300;
+
 const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }> = ({
   assets,
   readme,
 }) => {
+  const [isContentOverflowing, setContentOverflowing] = useState(false);
+  const contentElement = useRef<HTMLDivElement>(null);
+
   const assetType = 'canvas-workpad-template';
   const totalAssetCount = Object.values(assets.kibana).reduce(
     (count, assetArray) => count + assetArray.length,
@@ -58,15 +68,23 @@ const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }
     typeAssetCount = assets[assetType].length;
   }
 
+  useLayoutEffect(() => {
+    const element = contentElement.current;
+
+    if (!isContentOverflowing && element && element.offsetHeight >= OverflowHeight) {
+      setContentOverflowing(true);
+    }
+  }, [isContentOverflowing, setContentOverflowing]);
+
   return (
-    <div className="packageDetail" style={{ position: 'relative' }}>
+    <div className={`packageDetail ${isContentOverflowing ? 'packageDetail--overflowing' : ''}`}>
       <EuiCallOut
         iconType="iInCircle"
         title={`This package contains ${typeAssetCount} Canvas Template and ${
           totalAssetCount - typeAssetCount
         } other Kibana Assets`}
       />
-      <div style={{ height: '300px', overflow: 'hidden' }}>
+      <div className="packageDetail-details" ref={contentElement}>
         <EuiFlexGroup>
           <EuiFlexItem>
             <Markdown className="canvasMarkdown" markdown={readme} openLinksInNewTab={true} />

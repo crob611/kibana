@@ -1,14 +1,40 @@
 
+$euiTableHoverColor: tintOrShade($euiColorLightestShade, 50%, 20%);
+
 .packageDetail {
+  position: relative;
   width: 100%;
+  padding-bottom: $euiSizeS;
 
   .bottomFade {
-    width: 100%;
-    background-image: linear-gradient(rgba($euiColorLightestShade, 0) 0%, $euiColorLightestShade 100%);
-    position: absolute;
-    margin-top: -$euiSizeXL * 2;
-    height: $euiSizeXL * 2; 
+    display: none;
   }
 
+  &.packageDetail--overflowing {
+    padding-bottom: $euiSizeL;
+
+    .packageDetail-details {
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .bottomFade {
+      display: block;
+      width: 100%;
+      background-image: linear-gradient(rgba($euiTableHoverColor, 0) 0%, rgba($euiTableHoverColor, 50) 100%);
+      position: absolute;
+      margin-top: -$euiSizeXL * 2;
+      height: $euiSizeXL * 2; 
+    }
+
+    .readMoreButton {
+      width: 100%;
+      position: absolute;
+      margin-top: -$euiSizeL;
+      .euiButton {
+        background: $euiTableHoverColor;
+      } 
+    }
+  }
 }
 
