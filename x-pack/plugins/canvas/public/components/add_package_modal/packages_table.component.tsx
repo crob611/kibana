@@ -35,6 +35,7 @@ import { LEFT_ALIGNMENT, RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { markdownRenderers } from './markdown_renderers';
 import { PackageListItem } from '.';
 import { PackageInfoResponse } from './package_info_cache_context';
+import { Markdown } from '../../../../../../src/plugins/kibana_react/public';
 
 interface Props {
   packages: PackageListItem[];
@@ -130,13 +131,22 @@ export const PackagesTable: FC<Props> = ({
     },
   ];
 
-  return (
+  // Markdown is used by the package_detail.component and we need to measure the resulting
+  // markdown component. This Markdown component is wrapped in a Suspense, so likely the first time it
+  // is used, it will initially have a height of ZERO which throws everything off.
+  //
+  // To get around this, we are going to create this here to force the lazy load of the markdown component
+  // so that hopefully it's loaded when we actually need it further down the tree.
+  const genericMarkdown = <Markdown markdown="" />;
+
+  return [
     <EuiBasicTable
       columns={columns}
       items={packages}
       itemId="name"
       isExpandable={true}
       itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-    />
-  );
+    />,
+    genericMarkdown,
+  ];
 };
