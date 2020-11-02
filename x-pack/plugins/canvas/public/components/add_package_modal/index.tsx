@@ -12,6 +12,7 @@ import { PackagesTable as PackagesTableComponent } from './packages_table.compon
 import { PackagesTable as PackagesTableContainer } from './packages_table';
 import { EuiThemeProvider } from '../../../../xpack_legacy/common';
 import { usePlatformService } from '../../services';
+
 import {
   PackageInfoCacheContext,
   PackageInfoResponse,
