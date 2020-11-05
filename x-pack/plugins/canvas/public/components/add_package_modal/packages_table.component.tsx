@@ -35,7 +35,7 @@ const InstallButtonWrapper: FC<{
   package: PackageListItem;
   getAssetCountComponent: React.FC<{ packageKey: string }>;
 }> = ({ package: packageData, getAssetCountComponent }) => {
-  const ModalWrapper: React.FC = ({ children }) => {
+  /*const ModalWrapper: React.FC = ({ children }) => {
     const GetAssetCount = getAssetCountComponent;
 
     return (
@@ -43,12 +43,13 @@ const InstallButtonWrapper: FC<{
         {children}
       </GetAssetCount>
     );
-  };
+  };*/
 
   return (
     <InstallationButton
+      packageKey={`${packageData.name}-${packageData.version}`}
       canInstall={true}
-      modalWrapperComponent={ModalWrapper}
+      modalWrapperComponent={getAssetCountComponent}
       title={packageData.title || ''}
       installationStatus={packageData.status}
     />

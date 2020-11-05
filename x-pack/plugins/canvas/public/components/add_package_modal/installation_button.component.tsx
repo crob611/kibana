@@ -35,6 +35,7 @@ type InstallationButtonProps = Pick<PackageInfo, 'title'> & {
   onUninstall: () => void;
   canInstall: boolean;
   modalWrapperComponent?: Component | FC;
+  packageKey: string;
 };
 
 export { InstallStatus };
@@ -44,8 +45,12 @@ const ModalLoading: FC<{ onClose: () => void }> = ({ onClose }) => {
     <EuiOverlayMask>
       <EuiModal onClose={onClose}>
         <EuiModalHeader />
-        <EuiModalBody>
-          <EuiLoadingContent lines={4} />
+        <EuiModalBody className="packageDetail-loadingModal">
+          <div className="xxpackageDetail-loadingModal">
+            <EuiLoadingContent lines={4} />
+            <br />
+            <EuiLoadingContent lines={5} />
+          </div>
         </EuiModalBody>
       </EuiModal>
     </EuiOverlayMask>
@@ -64,25 +69,15 @@ export const InstallationButtonModal: FC<{
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    console.log('component mounted');
-  }, []);
-
-  /*
-  useLayoutEffect(() => {
-    if (!isInitialized && containerRef.current) {
-      console.log('adding listener');
-      containerRef.current.addEventListener('animationend', () => {
-        console.log('disabling animations');
-        document.querySelector('body')?.classList.add('disable-modal-animations');
-      });
-    }
+    const disableTimeout = setTimeout(() => {
+      document.querySelector('body')?.classList.add('disable-modal-animations');
+    }, 0);
 
     return () => {
-      console.log('reenabling animations');
+      clearTimeout(disableTimeout);
       document.querySelector('body')?.classList.remove('disable-modal-animations');
     };
   }, []);
-  */
 
   let modal = <ModalLoading onClose={onClose} />;
 
@@ -118,6 +113,7 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
   onUninstall,
   canInstall,
   modalWrapperComponent,
+  packageKey,
 }) => {
   const [isModalShowing, setIsModalShowing] = useState(false);
   const toggleModal = useCallback(() => {
@@ -186,8 +182,9 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
     <Fragment>
       {showUninstallButton || isRemoving ? uninstallButton : installButton}
       {isModalShowing ? (
-        <Wrapper>
+        <Wrapper packageKey={packageKey}>
           <InstallationButtonModal
+            key="install-modal"
             onClose={toggleModal}
             onInstall={onInstall}
             onUninstall={onUninstall}
