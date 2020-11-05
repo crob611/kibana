@@ -34,6 +34,10 @@ $euiTableHoverColor: tintOrShade($euiColorLightestShade, 50%, 20%);
   }
 }
 
+.packageDetail-loadingModal {
+  width: map-get($euiBreakpoints, 'm');
+}
+
 // This is to stop animations on modals and overlays when we go from loading -> loaded so it looks seamless
 .disable-modal-animations {
   .euiOverlayMask {

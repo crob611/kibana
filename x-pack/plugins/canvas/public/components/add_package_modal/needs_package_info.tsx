@@ -42,27 +42,27 @@ export const NeedsPackageInfo: FC<Pick<InfoProps, 'packageKey'>> = ({ children, 
         <PackageInfoCacheContext.Consumer>
           {(value) => {
             const cachedResponse = value.get(packageKey);
+            let fetchComponent = null;
 
             if (!cachedResponse) {
-              return (
-                <NeedsPackageInfoFetch packageKey={packageKey} onReceivedPackageInfo={cacheUpdater}>
-                  {children}
-                </NeedsPackageInfoFetch>
+              fetchComponent = (
+                <NeedsPackageInfoFetch
+                  key="fetch"
+                  packageKey={packageKey}
+                  onReceivedPackageInfo={cacheUpdater}
+                />
               );
             }
 
-            const child = React.Children.only(children);
-
-            return React.cloneElement(child, {
-              packageInfo: cachedResponse.data?.response,
-              error: cachedResponse.error,
-            });
-            return React.Children.map(children, (child) =>
-              React.cloneElement(child as ReactElement, {
-                packageInfo: cachedResponse.data?.response,
-                error: cachedResponse.error,
-              })
-            );
+            return [
+              React.Children.map(children, (child) =>
+                React.cloneElement(child as ReactElement, {
+                  packageInfo: cachedResponse?.data?.response,
+                  error: cachedResponse?.error,
+                })
+              ),
+              fetchComponent,
+            ];
           }}
         </PackageInfoCacheContext.Consumer>
       )}
@@ -154,37 +154,25 @@ export const NeedsPackageInfoAndReadme: FC<{ packageKey: string }> = ({ packageK
 };
 
 const AssetCount: FC<{ packageInfo?: PackageInfo }> = ({ children, packageInfo }) => {
-  if (!packageInfo) {
-    return <>{children}</>;
-  }
-
-  const assetCount = Object.entries(packageInfo.assets).reduce(
-    (acc, [serviceName, serviceNameValue]) =>
-      acc +
-      Object.entries(serviceNameValue).reduce(
-        (acc2, [assetName, assetNameValue]) => acc2 + assetNameValue.length,
+  const assetCount = packageInfo
+    ? Object.entries(packageInfo.assets).reduce(
+        (acc, [serviceName, serviceNameValue]) =>
+          acc +
+          Object.entries(serviceNameValue).reduce(
+            (acc2, [assetName, assetNameValue]) => acc2 + assetNameValue.length,
+            0
+          ),
         0
-      ),
-    0
-  );
-  const child = React.Children.only(children);
+      )
+    : undefined;
 
-  return React.cloneElement(child, {
-    assetCount,
-  });
-
-  const returnElements = [];
-  React.Children.forEach(children, (child) => {
-    returnElements.push(React.cloneElement(child as ReactElement, { assetCount }));
-  });
-
-  return returnElements;
+  return React.Children.map(children, (child) => React.cloneElement(child, { assetCount }));
 };
 
 export const NeedsAssetCount: FC<{ packageKey: string }> = ({ packageKey, children }) => {
   return (
-    <NeedsPackageInfo packageKey={packageKey}>
-      <AssetCount>{children}</AssetCount>
+    <NeedsPackageInfo packageKey={packageKey} key="needs-package-info">
+      <AssetCount key="asset-count">{children}</AssetCount>
     </NeedsPackageInfo>
   );
 };
