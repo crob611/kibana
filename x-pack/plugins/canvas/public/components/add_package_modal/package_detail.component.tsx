@@ -55,9 +55,6 @@ const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }
   assets,
   readme,
 }) => {
-  const [isContentOverflowing, setContentOverflowing] = useState(false);
-  const contentElement = useRef<HTMLDivElement>(null);
-
   const assetType = 'canvas-workpad-template';
   const totalAssetCount = Object.values(assets.kibana).reduce(
     (count, assetArray) => count + assetArray.length,
@@ -68,23 +65,15 @@ const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }
     typeAssetCount = assets[assetType].length;
   }
 
-  useLayoutEffect(() => {
-    const element = contentElement.current;
-
-    if (!isContentOverflowing && element && element.offsetHeight >= OverflowHeight) {
-      setContentOverflowing(true);
-    }
-  }, [isContentOverflowing, setContentOverflowing]);
-
   return (
-    <div className={`packageDetail ${isContentOverflowing ? 'packageDetail--overflowing' : ''}`}>
+    <div className={`packageDetail`}>
       <EuiCallOut
         iconType="iInCircle"
         title={`This package contains ${typeAssetCount} Canvas Template and ${
           totalAssetCount - typeAssetCount
         } other Kibana Assets`}
       />
-      <div className="packageDetail-details" ref={contentElement}>
+      <div className="packageDetail-details">
         <EuiFlexGroup>
           <EuiFlexItem>
             <Markdown className="canvasMarkdown" markdown={readme} openLinksInNewTab={true} />

@@ -4,38 +4,13 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useState, ReactElement, FC } from 'react';
-import {
-  EuiBasicTable,
-  EuiCallOut,
-  EuiIcon,
-  EuiButtonIcon,
-  EuiButton,
-  EuiAccordion,
-  EuiHorizontalRule,
-  EuiFlexGroup,
-  EuiFlexItem,
-  EuiTitle,
-  EuiSpacer,
-  EuiText,
-  EuiLoadingContent,
-} from '@elastic/eui';
-import {
-  InstallationButton,
-  useGetPackageInstallStatus,
-  useGetPackageInfoByKey,
-  ContentCollapse,
-  Readme,
-} from '../../../../ingest_manager/public/';
-import { PackageDetail } from './package_detail.component';
-
-import ReactMarkdown from 'react-markdown';
-import { elasticLogo } from '../../../canvas_plugin_src/lib/elastic_logo';
+import React, { useState, ReactElement, FC, useMemo } from 'react';
+import { EuiBasicTable, EuiButtonIcon } from '@elastic/eui';
 import { LEFT_ALIGNMENT, RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
-import { markdownRenderers } from './markdown_renderers';
+import { PackageDetail } from './package_detail.component';
 import { PackageListItem } from '.';
 import { PackageInfoResponse } from './package_info_cache_context';
-import { Markdown } from '../../../../../../src/plugins/kibana_react/public';
+import { InstallationButton } from './installation_button.component';
 
 interface Props {
   packages: PackageListItem[];
@@ -44,7 +19,10 @@ interface Props {
     Package Details Component should be a wrapper component. 
     It should accept a packageKey prop and should transfer package info to it's child components
   */
-  packageDetailsComponent: React.FC<{
+  getReadmeComponent: React.FC<{
+    packageKey: string;
+  }>;
+  getAssetCountComponent: React.FC<{
     packageKey: string;
   }>;
 }
@@ -53,21 +31,26 @@ interface DetailsProps {
   packageInfoResponse?: PackageInfoResponse;
 }
 
-const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packageData }) => {
-  const getPackageInstallStatus = useGetPackageInstallStatus();
+const InstallButtonWrapper: FC<{
+  package: PackageListItem;
+  getAssetCountComponent: React.FC<{ packageKey: string }>;
+}> = ({ package: packageData, getAssetCountComponent }) => {
+  const ModalWrapper: React.FC = ({ children }) => {
+    const GetAssetCount = getAssetCountComponent;
 
-  if (!getPackageInstallStatus(packageData.name)) {
-    return null;
-  }
+    return (
+      <GetAssetCount packageKey={`${packageData.name}-${packageData.version}`}>
+        {children}
+      </GetAssetCount>
+    );
+  };
 
   return (
     <InstallationButton
-      name={packageData.name}
-      version={packageData.version}
+      canInstall={true}
+      modalWrapperComponent={ModalWrapper}
       title={packageData.title || ''}
-      assets={{
-        kibana: {},
-      }}
+      installationStatus={packageData.status}
     />
   );
 };
@@ -75,7 +58,8 @@ const InstallButtonWrapper: FC<{ package: PackageListItem }> = ({ package: packa
 export const PackagesTable: FC<Props> = ({
   packages,
   iconComponent: IconComponent,
-  packageDetailsComponent: Wrapper,
+  getReadmeComponent: ReadmeWrapper,
+  getAssetCountComponent,
 }) => {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState({});
 
@@ -86,9 +70,9 @@ export const PackagesTable: FC<Props> = ({
     } else {
       const packageKey = `${item.name}-${item.version}`;
       itemIdToExpandedRowMapValues[item.name] = (
-        <Wrapper packageKey={packageKey}>
+        <ReadmeWrapper packageKey={packageKey}>
           <PackageDetail />
-        </Wrapper>
+        </ReadmeWrapper>
       );
     }
     setItemIdToExpandedRowMap(itemIdToExpandedRowMapValues);
@@ -126,27 +110,23 @@ export const PackagesTable: FC<Props> = ({
       align: RIGHT_ALIGNMENT,
       header: false,
       render: (packageData: PackageListItem) => {
-        return <InstallButtonWrapper package={packageData} />;
+        return (
+          <InstallButtonWrapper
+            package={packageData}
+            getAssetCountComponent={getAssetCountComponent}
+          />
+        );
       },
     },
   ];
 
-  // Markdown is used by the package_detail.component and we need to measure the resulting
-  // markdown component. This Markdown component is wrapped in a Suspense, so likely the first time it
-  // is used, it will initially have a height of ZERO which throws everything off.
-  //
-  // To get around this, we are going to create this here to force the lazy load of the markdown component
-  // so that hopefully it's loaded when we actually need it further down the tree.
-  const genericMarkdown = <Markdown markdown="" />;
-
-  return [
+  return (
     <EuiBasicTable
       columns={columns}
       items={packages}
       itemId="name"
       isExpandable={true}
       itemIdToExpandedRowMap={itemIdToExpandedRowMap}
-    />,
-    genericMarkdown,
-  ];
+    />
+  );
 };
