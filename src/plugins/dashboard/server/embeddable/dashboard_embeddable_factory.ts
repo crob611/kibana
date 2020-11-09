@@ -17,10 +17,15 @@
  * under the License.
  */
 
-import { EmbeddableServerPlugin, EmbeddableSetup, EmbeddableStart } from './plugin';
+import { EmbeddableRegistryDefinition } from '../../../embeddable/server';
+import { PersistableState } from '../../../kibana_utils/common/persistable_state';
 
-export { EmbeddableSetup, EmbeddableStart };
-
-export { EnhancementRegistryDefinition, EmbeddableRegistryDefinition } from './types';
-
-export const plugin = () => new EmbeddableServerPlugin();
+export class DashboardEmbeddableFactory implements EmbeddableRegistryDefinition {
+  public id: string = 'dashboard';
+  public telemetry: PersistableState['telemetry'] = (state, collectorData) => {
+    console.log('collecting telemetry');
+    console.log(state);
+    console.log(collectorData);
+    return collectorData;
+  };
+}

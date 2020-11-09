@@ -17,7 +17,15 @@
  * under the License.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+import { EmbeddableSetup, EmbeddableStart } from '../../embeddable/server';
+
 export interface DashboardPluginSetup {}
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DashboardPluginStart {}
+
+export interface SetupPlugins {
+  embeddable: EmbeddableSetup;
+}
+
+export interface StartPlugins {
+  embeddable: EmbeddableStart;
+}
