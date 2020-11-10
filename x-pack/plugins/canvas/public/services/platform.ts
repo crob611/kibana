@@ -11,6 +11,7 @@ import {
   ChromeBreadcrumb,
   IBasePath,
   ChromeStart,
+  NotificationsStart,
 } from '../../../../../src/core/public';
 import { CanvasServiceFactory } from '.';
 
@@ -30,6 +31,7 @@ export interface PlatformService {
   getSavedObjects: () => SavedObjectsStart;
   getSavedObjectsClient: () => SavedObjectsClientContract;
   getUISettings: () => IUiSettingsClient;
+  getNotifications: () => NotificationsStart;
 }
 
 export const platformServiceFactory: CanvasServiceFactory<PlatformService> = (

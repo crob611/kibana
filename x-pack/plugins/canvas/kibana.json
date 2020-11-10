@@ -12,7 +12,7 @@
     "expressions",
     "features",
     "inspector",
-    "ingest_manager",
+    "ingestManager",
     "uiActions",
     "charts"
   ],

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, ReactElement, useEffect, useState } from 'react';
+import React, { FC, ReactElement, useEffect } from 'react';
 import { useGetPackageInfoByKey, sendGetFileByPath } from '../../../../ingest_manager/public/';
 import {
   PackageInfoCacheContext,
@@ -86,7 +86,7 @@ const NeedsPackageReadmeFetch: FC<Readme> = ({
     sendGetFileByPath(readmePath).then((response) => {
       onReceivedPackageReadme(packageKey, response.data || '');
     });
-  }, [readmePath]);
+  }, [readmePath, onReceivedPackageReadme, packageKey]);
 
   return <>{children}</>;
 };
@@ -158,7 +158,7 @@ const AssetCount: FC<{ packageInfo?: PackageInfo }> = ({ children, packageInfo }
     ? Object.entries(packageInfo.assets).reduce(
         (acc, [serviceName, serviceNameValue]) =>
           acc +
-          Object.entries(serviceNameValue).reduce(
+          Object.entries(serviceNameValue || []).reduce(
             (acc2, [assetName, assetNameValue]) => acc2 + assetNameValue.length,
             0
           ),
@@ -166,7 +166,13 @@ const AssetCount: FC<{ packageInfo?: PackageInfo }> = ({ children, packageInfo }
       )
     : undefined;
 
-  return React.Children.map(children, (child) => React.cloneElement(child, { assetCount }));
+  return (
+    <>
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child as ReactElement, { assetCount })
+      )}
+    </>
+  );
 };
 
 export const NeedsAssetCount: FC<{ packageKey: string }> = ({ packageKey, children }) => {

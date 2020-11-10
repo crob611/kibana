@@ -249,7 +249,7 @@ export interface RegistryVarsEntry {
 export interface EpmPackageAdditions {
   title: string;
   latestVersion: string;
-  assets: AssetsGroupedByServiceByType;
+  assets: Partial<AssetsGroupedByServiceByType>;
   removable?: boolean;
 }
 

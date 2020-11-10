@@ -4,47 +4,34 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useState, ReactElement, FC, useMemo } from 'react';
+import React, { useState, FC, ReactNode } from 'react';
 import { EuiBasicTable, EuiButtonIcon } from '@elastic/eui';
-import { LEFT_ALIGNMENT, RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
+import { RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { PackageDetail } from './package_detail.component';
 import { PackageListItem } from '.';
-import { PackageInfoResponse } from './package_info_cache_context';
 import { InstallationButton } from './installation_button.component';
 
 interface Props {
   packages: PackageListItem[];
-  iconComponent: (props: { package: PackageListItem }) => ReactElement;
+  iconComponent: React.FC<{ package: PackageListItem }>;
   /*
-    Package Details Component should be a wrapper component. 
-    It should accept a packageKey prop and should transfer package info to it's child components
+    getReadmeComponent should fetch the README for the given package and pass it on to it's children
   */
   getReadmeComponent: React.FC<{
     packageKey: string;
   }>;
+  /*
+    getAssetCountComponent should fetch the assed count for the given package and pass it on to it's children
+  */
   getAssetCountComponent: React.FC<{
     packageKey: string;
   }>;
-}
-
-interface DetailsProps {
-  packageInfoResponse?: PackageInfoResponse;
 }
 
 const InstallButtonWrapper: FC<{
   package: PackageListItem;
   getAssetCountComponent: React.FC<{ packageKey: string }>;
 }> = ({ package: packageData, getAssetCountComponent }) => {
-  /*const ModalWrapper: React.FC = ({ children }) => {
-    const GetAssetCount = getAssetCountComponent;
-
-    return (
-      <GetAssetCount packageKey={`${packageData.name}-${packageData.version}`}>
-        {children}
-      </GetAssetCount>
-    );
-  };*/
-
   return (
     <InstallationButton
       packageKey={`${packageData.name}-${packageData.version}`}
@@ -62,7 +49,9 @@ export const PackagesTable: FC<Props> = ({
   getReadmeComponent: ReadmeWrapper,
   getAssetCountComponent,
 }) => {
-  const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState({});
+  const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<Record<string, ReactNode>>(
+    {}
+  );
 
   const toggleDetails = (item: PackageListItem) => {
     const itemIdToExpandedRowMapValues = { ...itemIdToExpandedRowMap };
@@ -81,7 +70,6 @@ export const PackagesTable: FC<Props> = ({
 
   const columns = [
     {
-      align: LEFT_ALIGNMENT,
       width: '40px',
       isExpander: true,
       render: (item: PackageListItem) => {

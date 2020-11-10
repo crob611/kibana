@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, useState, useLayoutEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import {
   EuiCallOut,
   EuiLoadingContent,
@@ -49,20 +49,19 @@ const PackageDetailLoading: FC = () => (
   </div>
 );
 
-const OverflowHeight = 300;
-
 const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }> = ({
   assets,
   readme,
 }) => {
+  const kibanaAssets = assets.kibana || [];
   const assetType = 'canvas-workpad-template';
-  const totalAssetCount = Object.values(assets.kibana).reduce(
+  const totalAssetCount = Object.values(kibanaAssets).reduce(
     (count, assetArray) => count + assetArray.length,
     0
   );
   let typeAssetCount = 0;
-  if (assets[assetType] !== undefined) {
-    typeAssetCount = assets[assetType].length;
+  if (assets.kibana && assets.kibana[assetType] !== undefined) {
+    typeAssetCount = assets.kibana[assetType].length;
   }
 
   return (

@@ -11,17 +11,7 @@ import {
   EuiLoadingContent,
   EuiModalHeader,
 } from '@elastic/eui';
-import React, {
-  FC,
-  Fragment,
-  ReactElement,
-  useCallback,
-  useMemo,
-  useState,
-  Component,
-  useLayoutEffect,
-  useEffect,
-} from 'react';
+import React, { FC, Fragment, useCallback, useState, useEffect } from 'react';
 import { FormattedMessage } from '@kbn/i18n/react';
 import { PackageInfo, InstallStatus } from '../../../../ingest_manager/common/';
 import { ConfirmPackageInstall, ConfirmPackageUninstall } from '../../../../ingest_manager/public/';
@@ -34,7 +24,7 @@ type InstallationButtonProps = Pick<PackageInfo, 'title'> & {
   onInstall: () => void;
   onUninstall: () => void;
   canInstall: boolean;
-  modalWrapperComponent?: Component | FC;
+  modalWrapperComponent?: FC<{ packageKey: string }>;
   packageKey: string;
 };
 
@@ -46,7 +36,7 @@ const ModalLoading: FC<{ onClose: () => void }> = ({ onClose }) => {
       <EuiModal onClose={onClose}>
         <EuiModalHeader />
         <EuiModalBody className="packageDetail-loadingModal">
-          <div className="xxpackageDetail-loadingModal">
+          <div>
             <EuiLoadingContent lines={4} />
             <br />
             <EuiLoadingContent lines={5} />
@@ -65,9 +55,6 @@ export const InstallationButtonModal: FC<{
   onUninstall: () => void;
   packageName: string;
 }> = ({ isInstalled, assetCount, onClose, onInstall, onUninstall, packageName }) => {
-  const containerRef = React.createRef<HTMLDivElement>();
-  const [isInitialized, setIsInitialized] = useState(false);
-
   useEffect(() => {
     const disableTimeout = setTimeout(() => {
       document.querySelector('body')?.classList.add('disable-modal-animations');
@@ -99,7 +86,7 @@ export const InstallationButtonModal: FC<{
     );
   }
 
-  return <div ref={containerRef}>{modal}</div>;
+  return <div>{modal}</div>;
 };
 
 const DefaultWrapper: FC = ({ children }) => {

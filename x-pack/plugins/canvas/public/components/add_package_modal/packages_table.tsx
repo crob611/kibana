@@ -4,16 +4,12 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useRef } from 'react';
+import { EuiLoadingContent } from '@elastic/eui';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
-import {
-  useGetPackages,
-  useSetPackageInstallStatus,
-  useGetPackageInstallStatus,
-} from '../../../../ingest_manager/public/';
+import { useGetPackages, useSetPackageInstallStatus } from '../../../../ingest_manager/public/';
 import { InstallStatus } from '../../../../ingest_manager/common';
 import { PackageIcon } from './package_icon';
-import { PackageListItem } from '.';
 import { NeedsPackageInfoAndReadme, NeedsAssetCount } from './needs_package_info';
 
 export const PackagesTable: FC<{}> = ({}) => {
@@ -22,17 +18,20 @@ export const PackagesTable: FC<{}> = ({}) => {
   const { data: allPackagesRes, isLoading } = useGetPackages();
 
   if (isLoading) {
-    return null;
+    return (
+      <div>
+        <EuiLoadingContent lines={5} />
+        <br />
+        <EuiLoadingContent lines={5} />
+      </div>
+    );
   }
 
   if (allPackagesRes) {
     const installStatuses = allPackagesRes.response.map((packageInfo) => ({
       name: packageInfo.name,
       version: packageInfo.version,
-      status:
-        packageInfo.savedObject !== undefined
-          ? InstallStatus.installed
-          : InstallStatus.notInstalled,
+      status: 'savedObject' in packageInfo ? InstallStatus.installed : InstallStatus.notInstalled,
     }));
 
     if (installStatuses.length > 0 && !hasSetInstallStatus.current) {
