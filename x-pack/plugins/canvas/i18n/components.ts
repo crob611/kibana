@@ -18,6 +18,23 @@ export const ComponentStrings = {
         defaultMessage: 'Add from Kibana',
       }),
   },
+  AddPackageFlyout: {
+    getAssetCountTitle: (assetType: string, assetCount: number, otherCount: number) =>
+      i18n.translate('xpack.canvas.addPackage.assetCountTitle', {
+        defaultMessage:
+          'This package contains {assetCount} {assetType}{assetCount, plural, one {} other {s}} and {otherCount} other {kibana} {otherCount, plural, one {asset} other {assets}}',
+        values: {
+          kibana: KIBANA,
+          assetCount,
+          otherCount,
+          assetType,
+        },
+      }),
+    getLearnMoreButtonLabel: () =>
+      i18n.translate('xpack.canvas.addPackage.learnMoreButtonLabel', {
+        defaultMessage: 'Learn More',
+      }),
+  },
   AdvancedFilter: {
     getApplyButtonLabel: () =>
       i18n.translate('xpack.canvas.renderer.advancedFilter.applyButtonLabel', {
@@ -29,6 +46,7 @@ export const ComponentStrings = {
         defaultMessage: 'Enter filter expression',
       }),
   },
+
   App: {
     getLoadErrorMessage: (error: string) =>
       i18n.translate('xpack.canvas.app.loadErrorMessage', {

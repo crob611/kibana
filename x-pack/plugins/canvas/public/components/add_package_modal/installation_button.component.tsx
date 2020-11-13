@@ -11,15 +11,15 @@ import {
   EuiLoadingContent,
   EuiModalHeader,
 } from '@elastic/eui';
-import React, { FC, Fragment, useCallback, useState, useEffect } from 'react';
+import React, { FC, Fragment, useCallback, useState, useEffect, useMemo } from 'react';
 import { FormattedMessage } from '@kbn/i18n/react';
-import { PackageInfo, InstallStatus } from '../../../../ingest_manager/common/';
-import { ConfirmPackageInstall, ConfirmPackageUninstall } from '../../../../ingest_manager/public/';
+import { PackageInfo, InstallStatus } from '../../../../fleet/common/';
+import { ConfirmPackageInstall, ConfirmPackageUninstall } from '../../../../fleet/public/';
+//import {InstallPackageType} from './packages_table'
 
 type InstallationButtonProps = Pick<PackageInfo, 'title'> & {
   disabled?: boolean;
   isUpdate?: boolean;
-  onInstallStateChange?: () => void;
   installationStatus: InstallStatus;
   onInstall: () => void;
   onUninstall: () => void;
@@ -112,6 +112,21 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
   const isRemoving = installationStatus === InstallStatus.uninstalling;
   const isInstalled = installationStatus === InstallStatus.installed;
   const showUninstallButton = isInstalled || isRemoving;
+  const handleInstall = useMemo(
+    () => () => {
+      onInstall();
+      toggleModal();
+    },
+    [onInstall, toggleModal]
+  );
+
+  const handleUninstall = useMemo(
+    () => () => {
+      onUninstall();
+      toggleModal();
+    },
+    [onUninstall, toggleModal]
+  );
 
   const installButton = (
     <EuiButton iconType={'importAction'} isLoading={isInstalling} onClick={toggleModal}>
@@ -173,8 +188,8 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
           <InstallationButtonModal
             key="install-modal"
             onClose={toggleModal}
-            onInstall={onInstall}
-            onUninstall={onUninstall}
+            onInstall={handleInstall}
+            onUninstall={handleUninstall}
             isInstalled={isInstalled}
             packageName={title}
           />

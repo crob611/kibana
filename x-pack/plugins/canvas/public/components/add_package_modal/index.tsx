@@ -5,19 +5,29 @@
  */
 
 import React, { FC, useState, useCallback } from 'react';
-import { PackageInfo, PackageListItem } from '../../../../ingest_manager/common/';
-import { PackageInstallProvider } from '../../../../ingest_manager/public';
+import {
+  PackageInfo,
+  PackageListItem,
+  KibanaAssetType,
+  RegistryPackage,
+} from '../../../../fleet/common/';
+import { PackageInstallProvider, AssetTitleMap } from '../../../../fleet/public';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
-import { PackagesTable as PackagesTableContainer } from './packages_table';
+import { PackagesTable as PackagesTableContainer, QueryType } from './packages_table';
 import { usePlatformService } from '../../services';
 
 import { PackageInfoResponse, CacheContext } from './package_info_cache_context';
 
 export { PackagesTableContainer, PackagesTableComponent, PackageInfoResponse };
 
-export { PackageListItem, PackageInfo };
+export { PackageListItem, PackageInfo, KibanaAssetType, AssetTitleMap, RegistryPackage };
 
-export const PackagesTable: FC = () => {
+export interface PackagesTableProps {
+  query?: QueryType;
+  navigateToUrl?: (packageHref: string) => void;
+}
+
+export const PackagesTable: FC<PackagesTableProps> = (props) => {
   const platform = usePlatformService();
   const [packageInfoCache, setPackageInfoCache] = useState(new Map<string, PackageInfoResponse>());
   const [packageReadmeCache, setPackageReadmeCache] = useState(new Map<string, string>());
@@ -52,7 +62,7 @@ export const PackagesTable: FC = () => {
         packageReadmeCache={packageReadmeCache}
         packageReadmeUpdater={readmeCacheUpdater}
       >
-        <PackagesTableContainer />
+        <PackagesTableContainer {...props} />
       </CacheContext>
     </PackageInstallProvider>
   );

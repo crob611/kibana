@@ -12,6 +12,7 @@ import {
   IBasePath,
   ChromeStart,
   NotificationsStart,
+  CoreStart,
 } from '../../../../../src/core/public';
 import { CanvasServiceFactory } from '.';
 
@@ -25,6 +26,7 @@ export interface PlatformService {
   setBreadcrumbs: (newBreadcrumbs: ChromeBreadcrumb[]) => void;
   setRecentlyAccessed: (link: string, label: string, id: string) => void;
   setFullscreen: ChromeStart['setIsVisible'];
+  navigateToUrl: CoreStart['application']['navigateToUrl'];
 
   // TODO: these should go away.  We want thin accessors, not entire objects.
   // Entire objects are hard to mock, and hide our dependency on the external service.
@@ -51,6 +53,7 @@ export const platformServiceFactory: CanvasServiceFactory<PlatformService> = (
     setBreadcrumbs: coreStart.chrome.setBreadcrumbs,
     setRecentlyAccessed: coreStart.chrome.recentlyAccessed.add,
     setFullscreen: coreStart.chrome.setIsVisible,
+    navigateToUrl: coreStart.application.navigateToUrl,
 
     // TODO: these should go away.  We want thin accessors, not entire objects.
     // Entire objects are hard to mock, and hide our dependency on the external service.

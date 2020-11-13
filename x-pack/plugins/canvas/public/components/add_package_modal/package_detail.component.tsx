@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import {
   EuiCallOut,
   EuiLoadingContent,
@@ -14,15 +14,18 @@ import {
   EuiButton,
   EuiIcon,
 } from '@elastic/eui';
-import { PackageInfo } from '.';
+import { PackageInfo, KibanaAssetType, AssetTitleMap, PackagesTableProps } from '.';
 import { Markdown } from '../../../../../../src/plugins/kibana_react/public';
 import './add_package.scss';
+import { ComponentStrings } from '../../../i18n/components';
 
-interface Props {
-  packageInfo?: Pick<PackageInfo, 'assets'>;
+type Props = {
+  packageInfo?: Pick<PackageInfo, 'assets' | 'name' | 'version'>;
   error?: string;
   readme?: string;
-}
+  assetType?: KibanaAssetType;
+  getPackageHref: (pkgKey: string) => string;
+} & Pick<PackagesTableProps, 'navigateToUrl'>;
 
 const PackageDetailError: FC<{ error: string }> = ({ error }) => (
   <div>
@@ -49,29 +52,46 @@ const PackageDetailLoading: FC = () => (
   </div>
 );
 
-const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }> = ({
+type DetailProps = {
+  assets: PackageInfo['assets'];
+  assetType?: KibanaAssetType;
+  readme: string;
+  packageLink: string;
+} & Pick<PackagesTableProps, 'navigateToUrl'>;
+
+const PackageDetailContent: FC<DetailProps> = ({
   assets,
   readme,
+  assetType,
+  packageLink,
+  navigateToUrl,
 }) => {
   const kibanaAssets = assets.kibana || [];
-  const assetType = 'canvas-workpad-template';
   const totalAssetCount = Object.values(kibanaAssets).reduce(
     (count, assetArray) => count + assetArray.length,
     0
   );
   let typeAssetCount = 0;
-  if (assets.kibana && assets.kibana[assetType] !== undefined) {
+  if (assets.kibana && assetType && assets.kibana[assetType] !== undefined) {
     typeAssetCount = assets.kibana[assetType].length;
   }
 
+  const buttonProps = {
+    [navigateToUrl ? 'onClick' : 'href']: navigateToUrl || packageLink,
+  };
+
   return (
     <div className={`packageDetail`}>
-      <EuiCallOut
-        iconType="iInCircle"
-        title={`This package contains ${typeAssetCount} Canvas Template and ${
-          totalAssetCount - typeAssetCount
-        } other Kibana Assets`}
-      />
+      {assetType ? (
+        <EuiCallOut
+          iconType="iInCircle"
+          title={ComponentStrings.AddPackageFlyout.getAssetCountTitle(
+            AssetTitleMap[assetType],
+            typeAssetCount,
+            totalAssetCount - typeAssetCount
+          )}
+        />
+      ) : null}
       <div className="packageDetail-details">
         <EuiFlexGroup>
           <EuiFlexItem>
@@ -84,8 +104,8 @@ const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }
 
       <div className="readMoreButton">
         <EuiText textAlign="center">
-          <EuiButton color="primary" href={'something'}>
-            Learn More <EuiIcon type="popout" />
+          <EuiButton color="primary" {...buttonProps}>
+            {ComponentStrings.AddPackageFlyout.getLearnMoreButtonLabel()} <EuiIcon type="popout" />
           </EuiButton>
         </EuiText>
       </div>
@@ -93,13 +113,41 @@ const PackageDetailContent: FC<{ assets: PackageInfo['assets']; readme: string }
   );
 };
 
-export const PackageDetail: FC<Props> = ({ packageInfo, error, readme }) => {
+export const PackageDetail: FC<Props> = ({
+  packageInfo,
+  error,
+  readme,
+  assetType,
+  navigateToUrl,
+  getPackageHref,
+}) => {
+  const packageHref = useMemo(
+    () =>
+      packageInfo !== undefined
+        ? getPackageHref(`${packageInfo.name}-${packageInfo.version}`)
+        : '#',
+    [packageInfo, getPackageHref]
+  );
+
+  const onPackageLinkClick = useMemo(
+    () => () => (navigateToUrl ? navigateToUrl(packageHref) : undefined),
+    [navigateToUrl, packageHref]
+  );
+
   if (error) {
     return <PackageDetailError error={error} />;
   }
 
   if (packageInfo && readme) {
-    return <PackageDetailContent assets={packageInfo.assets} readme={readme} />;
+    return (
+      <PackageDetailContent
+        assets={packageInfo.assets}
+        readme={readme}
+        assetType={assetType}
+        packageLink={packageHref}
+        navigateToUrl={onPackageLinkClick}
+      />
+    );
   }
 
   return <PackageDetailLoading />;

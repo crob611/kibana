@@ -7,16 +7,15 @@
 import React, { FC } from 'react';
 import { storiesOf } from '@storybook/react';
 import { PackageDetail } from '../package_detail.component';
+import { KibanaAssetType } from '../';
 
-const Wrapper: FC = ({ children }) => (
-  <div style={{ width: '400px', border: '1px solid black' }}>{children}</div>
-);
+const Wrapper: FC = ({ children }) => <div style={{ width: '400px' }}>{children}</div>;
 
-const sampleInfo = {
+const sampleInfo: any = {
   assets: {
     kibana: {
-      index_pattern: [],
-      canvas_workpad_template: [{}],
+      [KibanaAssetType.indexPattern]: [{}, {}, {}],
+      [KibanaAssetType.map]: [{}],
     },
   },
 };
@@ -59,5 +58,14 @@ storiesOf('components/PackagesFlyout/package_details', module)
   .add('overflowing', () => (
     <Wrapper>
       <PackageDetail packageInfo={sampleInfo} readme={longReadme} />
+    </Wrapper>
+  ))
+  .add('with asset type', () => (
+    <Wrapper>
+      <PackageDetail
+        packageInfo={sampleInfo}
+        readme={longReadme}
+        assetType={'index_pattern' as any}
+      />
     </Wrapper>
   ));

@@ -25,3 +25,6 @@ export * from './applications/fleet/hooks';
 export * from './applications/fleet/sections/epm/hooks';
 export * from './applications/fleet/sections/epm/screens/detail/readme';
 export * from './applications/fleet/sections/epm/screens/detail/content_collapse';
+export * from './applications/fleet/sections/epm/screens/detail/confirm_package_install';
+export * from './applications/fleet/sections/epm/screens/detail/confirm_package_uninstall';
+export { AssetTitleMap } from './applications/fleet/sections/epm/constants';

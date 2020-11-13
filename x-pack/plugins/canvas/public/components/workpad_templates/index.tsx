@@ -22,7 +22,7 @@ import { WorkpadTemplates as Component } from './workpad_templates';
 import { CanvasTemplate } from '../../../types';
 import { list } from '../../lib/template_service';
 import { applyTemplateStrings } from '../../../i18n/templates/apply_strings';
-import { useNotifyService } from '../../services';
+import { useNotifyService, usePlatformService } from '../../services';
 
 import { PackagesTable } from '../add_package_modal';
 interface WorkpadTemplatesProps {
@@ -38,6 +38,7 @@ const Creating: FunctionComponent<{ name: string }> = ({ name }) => (
 
 const PortalThing = ({ onClose, onPackageInstalled }) => {
   const element = useRef<null | HTMLDivElement>(null);
+  const platformService = usePlatformService();
 
   if (!element.current) {
     const container = document.createElement('div');
@@ -51,7 +52,10 @@ const PortalThing = ({ onClose, onPackageInstalled }) => {
     return createPortal(
       <EuiFlyout onClose={onClose}>
         <EuiFlyoutBody>
-          <PackagesTable onPackageInstalled={onPackageInstalled} />
+          <PackagesTable
+            onPackageInstalled={onPackageInstalled}
+            navigateToUrl={platformService.navigateToUrl}
+          />
         </EuiFlyoutBody>
       </EuiFlyout>,
       element.current

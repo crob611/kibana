@@ -23,6 +23,7 @@ const baseButtonProps = {
   canInstall: true,
   onInstall: action('onInstall'),
   onUninstall: action('onUninstall'),
+  packageKey: 'package-key',
 };
 
 storiesOf('components/PackagesFlyout/installation_button', module)

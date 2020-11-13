@@ -5,7 +5,7 @@
  */
 
 import React, { FC, ReactElement, useEffect } from 'react';
-import { useGetPackageInfoByKey, sendGetFileByPath } from '../../../../ingest_manager/public/';
+import { useGetPackageInfoByKey, sendGetFileByPath } from '../../../../fleet/public/';
 import {
   PackageInfoCacheContext,
   PackageInfoResponse,

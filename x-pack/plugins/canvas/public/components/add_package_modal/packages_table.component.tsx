@@ -4,14 +4,15 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { useState, FC, ReactNode } from 'react';
+import React, { useState, useMemo, FC, ReactNode } from 'react';
 import { EuiBasicTable, EuiButtonIcon } from '@elastic/eui';
 import { RIGHT_ALIGNMENT } from '@elastic/eui/lib/services';
 import { PackageDetail } from './package_detail.component';
-import { PackageListItem } from '.';
+import { PackageListItem, PackagesTableProps } from '.';
 import { InstallationButton } from './installation_button.component';
+import { RegistryPackageFunction } from './packages_table';
 
-interface Props {
+type Props = {
   packages: PackageListItem[];
   iconComponent: React.FC<{ package: PackageListItem }>;
   /*
@@ -26,19 +27,31 @@ interface Props {
   getAssetCountComponent: React.FC<{
     packageKey: string;
   }>;
-}
+  getPackageHref: (pkgKey: string) => string;
+  onInstallPackage: RegistryPackageFunction;
+  onUninstallPackage: RegistryPackageFunction;
+  getPackageInstallStatus: any;
+} & Omit<PackagesTableProps, 'query'>;
 
 const InstallButtonWrapper: FC<{
   package: PackageListItem;
   getAssetCountComponent: React.FC<{ packageKey: string }>;
-}> = ({ package: packageData, getAssetCountComponent }) => {
+  onInstall: RegistryPackageFunction;
+  onUninstall: RegistryPackageFunction;
+  installStatus: any;
+}> = ({ package: packageData, getAssetCountComponent, onInstall, onUninstall, installStatus }) => {
+  const handleInstall = useMemo(() => () => onInstall(packageData), [packageData, onInstall]);
+  const handleUninstall = useMemo(() => () => onUninstall(packageData), [packageData, onUninstall]);
+
   return (
     <InstallationButton
       packageKey={`${packageData.name}-${packageData.version}`}
       canInstall={true}
       modalWrapperComponent={getAssetCountComponent}
       title={packageData.title || ''}
-      installationStatus={packageData.status}
+      installationStatus={installStatus}
+      onInstall={handleInstall}
+      onUninstall={handleUninstall}
     />
   );
 };
@@ -48,6 +61,11 @@ export const PackagesTable: FC<Props> = ({
   iconComponent: IconComponent,
   getReadmeComponent: ReadmeWrapper,
   getAssetCountComponent,
+  getPackageHref,
+  navigateToUrl,
+  onInstallPackage,
+  onUninstallPackage,
+  getPackageInstallStatus,
 }) => {
   const [itemIdToExpandedRowMap, setItemIdToExpandedRowMap] = useState<Record<string, ReactNode>>(
     {}
@@ -61,7 +79,7 @@ export const PackagesTable: FC<Props> = ({
       const packageKey = `${item.name}-${item.version}`;
       itemIdToExpandedRowMapValues[item.name] = (
         <ReadmeWrapper packageKey={packageKey}>
-          <PackageDetail />
+          <PackageDetail getPackageHref={getPackageHref} navigateToUrl={navigateToUrl} />
         </ReadmeWrapper>
       );
     }
@@ -101,6 +119,9 @@ export const PackagesTable: FC<Props> = ({
       render: (packageData: PackageListItem) => {
         return (
           <InstallButtonWrapper
+            installStatus={getPackageInstallStatus(packageData.name)}
+            onInstall={onInstallPackage}
+            onUninstall={onUninstallPackage}
             package={packageData}
             getAssetCountComponent={getAssetCountComponent}
           />

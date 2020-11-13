@@ -6,7 +6,7 @@
 
 import React, { FC } from 'react';
 import { EuiIcon } from '@elastic/eui';
-import { usePackageIconType } from '../../../../ingest_manager/public/';
+import { usePackageIconType } from '../../../../fleet/public/';
 import { PackageListItem } from '.';
 
 interface Props {

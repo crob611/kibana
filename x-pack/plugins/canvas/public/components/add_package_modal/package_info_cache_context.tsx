@@ -6,7 +6,7 @@
 
 import React, { createContext, FC } from 'react';
 
-import { useGetPackageInfoByKey } from '../../../../ingest_manager/public/';
+import { useGetPackageInfoByKey } from '../../../../fleet/public/';
 
 export type PackageInfoResponse = ReturnType<typeof useGetPackageInfoByKey>;
 export type PackageInfoCache = Map<string, PackageInfoResponse>;
