@@ -5,29 +5,48 @@
  */
 
 import React, { FC, useState, useCallback } from 'react';
+import { EuiFlyout, EuiFlyoutBody, EuiFlyoutProps } from '@elastic/eui';
+import { Capabilities } from 'src/core/public';
 import {
   PackageInfo,
-  PackageListItem,
   KibanaAssetType,
-  RegistryPackage,
+  RegistryPackage as FullRegistryPackage,
+  InstallStatus,
 } from '../../../../fleet/common/';
-import { PackageInstallProvider, AssetTitleMap } from '../../../../fleet/public';
-import { PackagesTable as PackagesTableComponent } from './packages_table.component';
-import { PackagesTable as PackagesTableContainer, QueryType } from './packages_table';
+import { PackageInstallProvider, AssetTitleMap, useGetPackages } from '../../../../fleet/public';
+import {
+  PackagesTable as PackagesTableComponent,
+  PackagesTableProps,
+} from './packages_table.component';
+import { PackagesTable as PackagesTableContainer } from './packages_table';
 import { usePlatformService } from '../../services';
 
 import { PackageInfoResponse, CacheContext } from './package_info_cache_context';
 
-export { PackagesTableContainer, PackagesTableComponent, PackageInfoResponse };
+export {
+  PackagesTableContainer,
+  PackagesTableComponent,
+  PackageInfoResponse,
+  PackageInfo,
+  KibanaAssetType,
+  AssetTitleMap,
+  InstallStatus,
+  PackagesTableProps,
+};
 
-export { PackageListItem, PackageInfo, KibanaAssetType, AssetTitleMap, RegistryPackage };
+export type RegistryPackage = Pick<FullRegistryPackage, 'name' | 'version' | 'title' | 'icons'>;
 
-export interface PackagesTableProps {
+export type RegistryPackageFunction = (packageInfo: RegistryPackage) => void;
+
+export type QueryType = Parameters<typeof useGetPackages>[0];
+export interface ManagePackagesProps {
   query?: QueryType;
-  navigateToUrl?: (packageHref: string) => void;
+  navigateToUrl: (url: string) => void;
+  onInstallationStatusChange: () => void;
+  capabilities: Capabilities;
 }
 
-export const PackagesTable: FC<PackagesTableProps> = (props) => {
+export const ManagePackages: FC<ManagePackagesProps> = (props) => {
   const platform = usePlatformService();
   const [packageInfoCache, setPackageInfoCache] = useState(new Map<string, PackageInfoResponse>());
   const [packageReadmeCache, setPackageReadmeCache] = useState(new Map<string, string>());
@@ -65,5 +84,27 @@ export const PackagesTable: FC<PackagesTableProps> = (props) => {
         <PackagesTableContainer {...props} />
       </CacheContext>
     </PackageInstallProvider>
+  );
+};
+
+export type ManagePackagesFlyoutProps = ManagePackagesProps & EuiFlyoutProps;
+export const ManagePackagesFlyout: React.FC<ManagePackagesFlyoutProps> = ({
+  query,
+  navigateToUrl,
+  onInstallationStatusChange,
+  capabilities,
+  ...flyoutProps
+}) => {
+  return (
+    <EuiFlyout {...flyoutProps}>
+      <EuiFlyoutBody>
+        <ManagePackages
+          capabilities={capabilities}
+          query={query}
+          onInstallationStatusChange={onInstallationStatusChange}
+          navigateToUrl={navigateToUrl}
+        />
+      </EuiFlyoutBody>
+    </EuiFlyout>
   );
 };

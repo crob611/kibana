@@ -24,7 +24,7 @@ import { list } from '../../lib/template_service';
 import { applyTemplateStrings } from '../../../i18n/templates/apply_strings';
 import { useNotifyService, usePlatformService } from '../../services';
 
-import { PackagesTable } from '../add_package_modal';
+import { ManagePackagesFlyout, ManagePackagesFlyoutProps } from '../add_package_modal';
 interface WorkpadTemplatesProps {
   onClose: () => void;
 }
@@ -36,30 +36,19 @@ const Creating: FunctionComponent<{ name: string }> = ({ name }) => (
   </div>
 );
 
-const PortalThing = ({ onClose, onPackageInstalled }) => {
+const PackagesPortal: React.FC<ManagePackagesFlyoutProps> = (props) => {
   const element = useRef<null | HTMLDivElement>(null);
-  const platformService = usePlatformService();
 
   if (!element.current) {
     const container = document.createElement('div');
     const body = document.querySelector('body');
-    body.append(container);
+    body?.append(container);
 
     element.current = container;
   }
 
   if (element.current) {
-    return createPortal(
-      <EuiFlyout onClose={onClose}>
-        <EuiFlyoutBody>
-          <PackagesTable
-            onPackageInstalled={onPackageInstalled}
-            navigateToUrl={platformService.navigateToUrl}
-          />
-        </EuiFlyoutBody>
-      </EuiFlyout>,
-      element.current
-    );
+    return createPortal(<ManagePackagesFlyout {...props} />, element.current);
   }
 
   return null;
@@ -67,6 +56,7 @@ const PortalThing = ({ onClose, onPackageInstalled }) => {
 
 export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onClose }) => {
   const router = useContext(RouterContext);
+  const platformService = usePlatformService();
   const [templates, setTemplates] = useState<CanvasTemplate[] | undefined>(undefined);
   const [creatingFromTemplateName, setCreatingFromTemplateName] = useState<string | undefined>(
     undefined
@@ -116,16 +106,24 @@ export const WorkpadTemplates: FunctionComponent<WorkpadTemplatesProps> = ({ onC
     return <Creating name={creatingFromTemplateName} />;
   }
 
-  return [
-    <Component
-      key="component"
-      onClose={onClose}
-      templates={templateProp}
-      onCreateFromTemplate={createFromTemplate}
-      onInstallNew={showPackages}
-    />,
-    isPackagesVisible ? (
-      <PortalThing key="portal" onClose={hidePackages} onPackageInstalled={fetchTemplates} />
-    ) : null,
-  ];
+  return (
+    <div>
+      <Component
+        key="component"
+        onClose={onClose}
+        templates={templateProp}
+        onCreateFromTemplate={createFromTemplate}
+        onInstallNew={showPackages}
+      />
+      {isPackagesVisible ? (
+        <PackagesPortal
+          key="portal"
+          onClose={hidePackages}
+          onInstallationStatusChange={fetchTemplates}
+          navigateToUrl={platformService.navigateToUrl}
+          capabilities={platformService.getCapabilities()}
+        />
+      ) : null}
+    </div>
+  );
 };

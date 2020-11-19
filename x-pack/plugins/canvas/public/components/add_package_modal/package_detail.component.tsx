@@ -20,12 +20,11 @@ import './add_package.scss';
 import { ComponentStrings } from '../../../i18n/components';
 
 type Props = {
-  packageInfo?: Pick<PackageInfo, 'assets' | 'name' | 'version'>;
+  packageInfo?: PackageInfo;
   error?: string;
   readme?: string;
   assetType?: KibanaAssetType;
-  getPackageHref: (pkgKey: string) => string;
-} & Pick<PackagesTableProps, 'navigateToUrl'>;
+} & Pick<PackagesTableProps, 'navigateToUrl' | 'getPackageHref'>;
 
 const PackageDetailError: FC<{ error: string }> = ({ error }) => (
   <div>
@@ -56,16 +55,10 @@ type DetailProps = {
   assets: PackageInfo['assets'];
   assetType?: KibanaAssetType;
   readme: string;
-  packageLink: string;
+  navigateToUrl: () => void;
 } & Pick<PackagesTableProps, 'navigateToUrl'>;
 
-const PackageDetailContent: FC<DetailProps> = ({
-  assets,
-  readme,
-  assetType,
-  packageLink,
-  navigateToUrl,
-}) => {
+const PackageDetailContent: FC<DetailProps> = ({ assets, readme, assetType, navigateToUrl }) => {
   const kibanaAssets = assets.kibana || [];
   const totalAssetCount = Object.values(kibanaAssets).reduce(
     (count, assetArray) => count + assetArray.length,
@@ -75,10 +68,6 @@ const PackageDetailContent: FC<DetailProps> = ({
   if (assets.kibana && assetType && assets.kibana[assetType] !== undefined) {
     typeAssetCount = assets.kibana[assetType].length;
   }
-
-  const buttonProps = {
-    [navigateToUrl ? 'onClick' : 'href']: navigateToUrl || packageLink,
-  };
 
   return (
     <div className={`packageDetail`}>
@@ -104,7 +93,7 @@ const PackageDetailContent: FC<DetailProps> = ({
 
       <div className="readMoreButton">
         <EuiText textAlign="center">
-          <EuiButton color="primary" {...buttonProps}>
+          <EuiButton color="primary" onClick={navigateToUrl}>
             {ComponentStrings.AddPackageFlyout.getLearnMoreButtonLabel()} <EuiIcon type="popout" />
           </EuiButton>
         </EuiText>
@@ -129,10 +118,10 @@ export const PackageDetail: FC<Props> = ({
     [packageInfo, getPackageHref]
   );
 
-  const onPackageLinkClick = useMemo(
-    () => () => (navigateToUrl ? navigateToUrl(packageHref) : undefined),
-    [navigateToUrl, packageHref]
-  );
+  const onPackageLinkClick = useMemo(() => () => navigateToUrl(packageHref), [
+    navigateToUrl,
+    packageHref,
+  ]);
 
   if (error) {
     return <PackageDetailError error={error} />;
@@ -144,7 +133,6 @@ export const PackageDetail: FC<Props> = ({
         assets={packageInfo.assets}
         readme={readme}
         assetType={assetType}
-        packageLink={packageHref}
         navigateToUrl={onPackageLinkClick}
       />
     );

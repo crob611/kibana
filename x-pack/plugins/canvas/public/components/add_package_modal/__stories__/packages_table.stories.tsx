@@ -11,27 +11,20 @@ import React, { FC } from 'react';
 import { PackagesTable } from '../packages_table.component';
 import { elasticLogo } from '../../../../canvas_plugin_src/lib/elastic_logo';
 import { elasticOutline } from '../../../../canvas_plugin_src/lib/elastic_outline';
-import { PackageListItem } from '../';
+import { RegistryPackage, InstallStatus } from '../';
 
 const packages = [
   {
-    description: 'This is the description of the Elastic Package',
     name: 'Elastic Package',
     title: 'Elastic Package Title',
-    release: 'beta',
+    version: '1.0.0',
   },
   {
-    description: 'This is the description of the Elastic Outline Package',
     name: 'Outline Package',
     title: 'Outline Package Title',
-    release: 'experimental',
+    version: '1.1.1',
   },
-];
-
-const packageIcons = {
-  'Elastic Package': elasticLogo,
-  'Outline Package': elasticOutline,
-};
+] as RegistryPackage[];
 
 const onSelect = action('onSelect');
 
@@ -64,6 +57,11 @@ const AssetCountComponent: FC = ({ children }) => (
   <>{React.Children.map(children, (child) => React.cloneElement(child, { assetCount: 20 }))}</>
 );
 
+const onInstall = action('onInstall');
+const onUninstall = action('onUninstall');
+const onInstallStatusChange = action('install status change');
+const navigateToUrl = action('navigate to url');
+
 storiesOf('components/PackagesTable', module).add('default', () => (
   <Wrapper>
     <PackagesTable
@@ -71,6 +69,12 @@ storiesOf('components/PackagesTable', module).add('default', () => (
       iconComponent={IconComponent}
       getAssetCountComponent={AssetCountComponent}
       getReadmeComponent={ReadmeComponent}
+      getPackageHref={(key) => 'https://google.com'}
+      onInstallPackage={onInstall}
+      onUninstallPackage={onUninstall}
+      getPackageInstallStatus={(name) => InstallStatus.notInstalled}
+      onInstallationStatusChange={onInstallStatusChange}
+      navigateToUrl={navigateToUrl}
     />
   </Wrapper>
 ));

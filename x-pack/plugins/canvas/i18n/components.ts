@@ -1828,5 +1828,9 @@ export const ComponentStrings = {
           templateName,
         },
       }),
+    getInstallTemplatesLabel: () =>
+      i18n.translate('xpack.canvas.workpadTemplate.installTemplatesLabel', {
+        defaultMessage: `Install new templates`,
+      }),
   },
 };

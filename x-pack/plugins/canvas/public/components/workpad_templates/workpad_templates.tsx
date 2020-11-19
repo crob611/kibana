@@ -47,6 +47,7 @@ interface WorkpadTemplatesProps {
   onCreateFromTemplate: (template: CanvasTemplate) => Promise<void>;
   onClose: () => void;
   templates: Record<string, CanvasTemplate>;
+  onInstallNew: () => void;
 }
 
 interface WorkpadTemplatesState {
@@ -206,7 +207,9 @@ export class WorkpadTemplates extends React.PureComponent<
             <EuiFlexGroup>
               <EuiFlexItem grow={1}>{this.renderSearch()}</EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton onClick={this.props.onInstallNew}>Install New Templates</EuiButton>
+                <EuiButton onClick={this.props.onInstallNew}>
+                  {strings.getInstallTemplatesLabel()}{' '}
+                </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
 

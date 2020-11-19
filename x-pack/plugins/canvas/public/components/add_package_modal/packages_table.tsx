@@ -15,17 +15,12 @@ import {
   useUninstallPackage,
   useGetPackageInstallStatus,
 } from '../../../../fleet/public/';
-import { InstallStatus } from '../../../../fleet/common';
+
 import { PackageIcon } from './package_icon';
 import { NeedsPackageInfoAndReadme, NeedsAssetCount } from './needs_package_info';
-import { PackagesTableProps, PackageInfo, RegistryPackage } from '.';
+import { ManagePackagesProps, RegistryPackageFunction, InstallStatus } from '.';
 
-export type QueryType = Parameters<typeof useGetPackages>[0];
-export type RegistryPackageFunction = (
-  packageInfo: Pick<RegistryPackage, 'name' | 'version' | 'title'>
-) => void;
-
-export const PackagesTable: FC<PackagesTableProps> = ({ query, ...restProps }) => {
+export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ...restProps }) => {
   const hasSetInstallStatus = useRef<boolean>(false);
   const setPackageInstallStatus = useSetPackageInstallStatus();
   const { data: allPackagesRes, isLoading } = useGetPackages(query);
@@ -92,6 +87,7 @@ export const PackagesTable: FC<PackagesTableProps> = ({ query, ...restProps }) =
     return (
       <PackagesTableComponent
         {...restProps}
+        canWrite={capabilities.ingestManager.write as boolean}
         getPackageInstallStatus={getPackageInstallStatus}
         getPackageHref={getPackageHref}
         packages={allPackagesRes.response}

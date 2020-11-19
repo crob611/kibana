@@ -34,6 +34,7 @@ export interface PlatformService {
   getSavedObjectsClient: () => SavedObjectsClientContract;
   getUISettings: () => IUiSettingsClient;
   getNotifications: () => NotificationsStart;
+  getCapabilities: () => CoreStart['application']['capabilities'];
 }
 
 export const platformServiceFactory: CanvasServiceFactory<PlatformService> = (
@@ -60,5 +61,6 @@ export const platformServiceFactory: CanvasServiceFactory<PlatformService> = (
     getSavedObjects: () => coreStart.savedObjects,
     getSavedObjectsClient: () => coreStart.savedObjects.client,
     getUISettings: () => coreStart.uiSettings,
+    getCapabilities: () => coreStart.application.capabilities,
   };
 };

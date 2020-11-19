@@ -107,7 +107,7 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
     setIsModalShowing(!isModalShowing);
   }, [isModalShowing]);
 
-  const disabled = false;
+  const disabled = !canInstall;
   const isInstalling = installationStatus === InstallStatus.installing;
   const isRemoving = installationStatus === InstallStatus.uninstalling;
   const isInstalled = installationStatus === InstallStatus.installed;
@@ -129,7 +129,12 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
   );
 
   const installButton = (
-    <EuiButton iconType={'importAction'} isLoading={isInstalling} onClick={toggleModal}>
+    <EuiButton
+      iconType={'importAction'}
+      isLoading={isInstalling}
+      onClick={toggleModal}
+      disabled={disabled}
+    >
       {isInstalling ? (
         <FormattedMessage
           id="xpack.ingestManager.integrations.installPackage.installingPackageButtonLabel"
@@ -180,7 +185,7 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
 
   const Wrapper = modalWrapperComponent || DefaultWrapper;
 
-  return canInstall ? (
+  return (
     <Fragment>
       {showUninstallButton || isRemoving ? uninstallButton : installButton}
       {isModalShowing ? (
@@ -196,5 +201,5 @@ export const InstallationButton: FC<InstallationButtonProps> = ({
         </Wrapper>
       ) : null}
     </Fragment>
-  ) : null;
+  );
 };

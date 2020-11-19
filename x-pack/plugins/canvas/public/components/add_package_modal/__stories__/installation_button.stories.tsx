@@ -28,40 +28,31 @@ const baseButtonProps = {
 
 storiesOf('components/PackagesFlyout/installation_button', module)
   .add('not installed', () => (
-    <InstallationButton
-      {...baseButtonProps}
-      installationStatus={InstallStatus.notInstalled}
-      canInstall={true}
-    />
+    <InstallationButton {...baseButtonProps} installationStatus={InstallStatus.notInstalled} />
   ))
   .add('not installed with asset count', () => (
     <InstallationButton
       {...baseButtonProps}
       installationStatus={InstallStatus.notInstalled}
-      canInstall={true}
+      modalWrapperComponent={ModalWrapper}
+    />
+  ))
+  .add('not installed without write permission', () => (
+    <InstallationButton
+      {...baseButtonProps}
+      installationStatus={InstallStatus.notInstalled}
+      canInstall={false}
       modalWrapperComponent={ModalWrapper}
     />
   ))
   .add('installed', () => (
-    <InstallationButton
-      {...baseButtonProps}
-      installationStatus={InstallStatus.installed}
-      canInstall={true}
-    />
+    <InstallationButton {...baseButtonProps} installationStatus={InstallStatus.installed} />
   ))
   .add('installing', () => (
-    <InstallationButton
-      {...baseButtonProps}
-      installationStatus={InstallStatus.installing}
-      canInstall={true}
-    />
+    <InstallationButton {...baseButtonProps} installationStatus={InstallStatus.installing} />
   ))
   .add('uninstalling', () => (
-    <InstallationButton
-      {...baseButtonProps}
-      installationStatus={InstallStatus.uninstalling}
-      canInstall={true}
-    />
+    <InstallationButton {...baseButtonProps} installationStatus={InstallStatus.uninstalling} />
   ));
 
 const baseModalProps = {

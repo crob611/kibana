@@ -7,10 +7,10 @@
 import React, { FC } from 'react';
 import { EuiIcon } from '@elastic/eui';
 import { usePackageIconType } from '../../../../fleet/public/';
-import { PackageListItem } from '.';
+import { RegistryPackage } from '.';
 
 interface Props {
-  package: PackageListItem;
+  package: RegistryPackage;
 }
 
 export const PackageIcon: FC<Props> = ({ package: packageData }) => {
