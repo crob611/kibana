@@ -34,10 +34,12 @@ import {
 } from '../common/lib';
 import { PersistableStateService, SerializableState } from '../../kibana_utils/common';
 import { EmbeddableStateWithType } from '../common/types';
+import { EmbeddableTelemetryCollector } from './telemetry/embeddable_telemetry_collector';
 
 export interface EmbeddableSetup extends PersistableStateService<EmbeddableStateWithType> {
   registerEmbeddableFactory: (factory: EmbeddableRegistryDefinition) => void;
   registerEnhancement: (enhancement: EnhancementRegistryDefinition) => void;
+  telemetryCollector: EmbeddableTelemetryCollector;
 }
 
 export type EmbeddableStart = PersistableStateService<EmbeddableStateWithType>;
@@ -46,18 +48,22 @@ export class EmbeddableServerPlugin implements Plugin<EmbeddableSetup, Embeddabl
   private readonly embeddableFactories: EmbeddableFactoryRegistry = new Map();
   private readonly enhancements: EnhancementsRegistry = new Map();
 
-  public setup(core: CoreSetup) {
+  public setup(core: CoreSetup, plugins: any) {
     const commonContract = {
       getEmbeddableFactory: this.getEmbeddableFactory,
       getEnhancement: this.getEnhancement,
     };
+    const telemetry = getTelemetryFunction(commonContract);
+    const telemetryCollector = new EmbeddableTelemetryCollector(telemetry);
+
     return {
       registerEmbeddableFactory: this.registerEmbeddableFactory,
       registerEnhancement: this.registerEnhancement,
-      telemetry: getTelemetryFunction(commonContract),
+      telemetry,
       extract: getExtractFunction(commonContract),
       inject: getInjectFunction(commonContract),
       migrate: getMigrateFunction(commonContract),
+      telemetryCollector,
     };
   }
 
