@@ -24,6 +24,7 @@ import {
   CoreStart,
   Plugin,
   Logger,
+  ISavedObjectsRepository,
 } from '../../../core/server';
 
 import { createDashboardSavedObjectType } from './saved_objects';
@@ -43,6 +44,7 @@ interface SetupDeps {
 export class DashboardPlugin
   implements Plugin<DashboardPluginSetup, DashboardPluginStart, SetupDeps> {
   private readonly logger: Logger;
+  private savedObjectsClient?: ISavedObjectsRepository;
 
   constructor(public readonly initializerContext: PluginInitializerContext) {
     this.logger = initializerContext.logger.get();
@@ -63,24 +65,18 @@ export class DashboardPlugin
     const factory = new DashboardEmbeddableFactory();
     plugins.embeddable.registerEmbeddableFactory(factory);
 
-    const globalConfig = await this.initializerContext.config.legacy.globalConfig$
-      .pipe(first())
-      .toPromise();
-    registerDashboardUsageCollector(plugins.usageCollection, globalConfig.kibana.index);
+    registerDashboardUsageCollector(
+      plugins.usageCollection,
+      () => this.savedObjectsClient,
+      plugins.embeddable.telemetry,
+      plugins.embeddable.telemetryCollector
+    );
 
     return {};
   }
 
   public start(core: CoreStart) {
-    this.logger.debug('dashboard: Started');
-
-    //    plugins.embeddable.telemetry();
-
-    //console.log(plugins.embeddable.telemetry());
-    //const repository = core.savedObjects.createInternalRepository();
-    //repository
-    //  .get('dashboard', '7adfa750-4c81-11e8-b3d7-01146121b73d')
-    //  .then((thing) => console.log(thing); plugins.embeddable.telemetry());
+    this.savedObjectsClient = core.savedObjects.createInternalRepository();
 
     return {};
   }

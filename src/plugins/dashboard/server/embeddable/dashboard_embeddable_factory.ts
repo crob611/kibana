@@ -20,12 +20,15 @@
 import { EmbeddableRegistryDefinition } from '../../../embeddable/server';
 import { PersistableState } from '../../../kibana_utils/common/persistable_state';
 
+interface CollectorData {
+  total: number;
+}
+
 export class DashboardEmbeddableFactory implements EmbeddableRegistryDefinition {
   public id: string = 'dashboard';
-  public telemetry: PersistableState['telemetry'] = (state, collectorData) => {
-    console.log('collecting telemetry');
-    console.log(state);
-    console.log(collectorData);
-    return collectorData;
+
+  public telemetry: PersistableState['telemetry'] = (state, collectorData: CollectorData) => {
+    const newCollectorData = { ...collectorData, total: collectorData.total + 1 };
+    return newCollectorData;
   };
 }

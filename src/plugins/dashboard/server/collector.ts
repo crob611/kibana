@@ -17,43 +17,74 @@
  * under the License.
  */
 
+import { ISavedObjectsRepository } from 'src/core/server';
 import { CollectorFetchContext, UsageCollectionSetup } from 'src/plugins/usage_collection/server';
+import { EmbeddableSetup } from 'src/plugins/embeddable/server';
+import { extractReferences } from '../common/saved_dashboard_references';
 
-/*
-  Register the canvas usage collector function
+type EmbeddableContext = Promise<{}>;
 
-  This will call all of the defined collectors and combine the individual results into a single object
-  to be returned to the caller.
-
-  A usage collector function returns an object derived from current data in the ES Cluster.
-*/
 export function registerDashboardUsageCollector(
-  usageCollection: UsageCollectionSetup | undefined,
-  kibanaIndex: string
+  usageCollection: UsageCollectionSetup,
+  getSavedObjectsClient: () => ISavedObjectsRepository | undefined,
+  embeddableTelemetry: EmbeddableSetup['telemetry'],
+  collector: EmbeddableSetup['collector']
 ) {
-  if (!usageCollection) {
-    return;
-  }
-
   const dashboardCollector = usageCollection.makeUsageCollector({
     type: 'dashboard-experimental',
-    isReady: () => true,
-    fetch: async ({ callCluster }: CollectorFetchContext) => {
-      const response = await callCluster('search', {
-        size: 10000, // elasticsearch index.max_result_window default value
-        index: kibanaIndex,
-        ignoreUnavailable: true,
-        filterPath: [],
-        body: { query: { bool: { filter: { term: { type: 'dashboard' } } } } },
-      });
+    isReady: () => {
+      return typeof getSavedObjectsClient() !== 'undefined';
+    },
+    fetch: async () => {
+      const embeddableData = await collector.run();
 
-      response.hits.hits.map(console.log);
+      console.log('this is the embeddable data');
+      console.log(embeddableData);
+      //const embeddableResults = await collector.run();
 
-      return {
-        total: 69,
+      /*
+      const savedObjectsClient = getSavedObjectsClient();
+
+      // Should never hit this case, because of the isReady
+      if (typeof savedObjectsClient === 'undefined') {
+        return;
+      }
+
+      const dashboards = await savedObjectsClient.find({ type: 'dashboard' });
+      const dashboardTelemetry = {
+        total: 0,
       };
+
+      return dashboards.saved_objects
+        .map((d) => ({
+          id: d.id,
+          type: d.type,
+        }))
+        .reduce((reduction, d) => embeddableTelemetry(d, reduction), dashboardTelemetry);
+        */
     },
     schema: { total: { type: 'long' } },
+    extendFetchContext: {
+      embeddable: true,
+    },
+  });
+
+  // Register with embeddable collector
+  collector.register({
+    fetcher: async () => {
+      const client = getSavedObjectsClient();
+      if (client === undefined) {
+        return Promise.resolve([]);
+      }
+
+      return await (await client.find({ type: 'dashboard' })).saved_objects.map((so) => ({
+        id: so.id,
+        type: so.type,
+      }));
+    },
+    extractor: () => [],
+    getBaseCollectorData: () => ({ total: 0 }),
+    type: 'dashboard',
   });
 
   usageCollection.registerCollector(dashboardCollector);

@@ -3,16 +3,7 @@
   "version": "kibana",
   "server": true,
   "ui": true,
-  "requiredPlugins": [
-    "inspector",
-    "uiActions"
-  ],
-  "extraPublicDirs": [
-    "public/lib/test_samples"
-  ],
-  "requiredBundles": [
-    "savedObjects",
-    "kibanaReact",
-    "kibanaUtils"
-  ]
+  "requiredPlugins": ["inspector", "uiActions"],
+  "extraPublicDirs": ["public/lib/test_samples"],
+  "requiredBundles": ["savedObjects", "kibanaReact", "kibanaUtils"]
 }
