@@ -16,21 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { EmbeddableRegistryDefinition } from '../../../embeddable/server';
-import { PersistableState } from '../../../kibana_utils/common/persistable_state';
-
-interface CollectorData {
-  total: number;
-}
-
-export class DashboardEmbeddableFactory implements EmbeddableRegistryDefinition {
-  public id: string = 'dashboard';
-
-  public extract = (state) => {};
-
-  public telemetry = (state, collectorData: CollectorData) => {
-    const newCollectorData = { ...collectorData, total: collectorData.total + 1 };
-    return newCollectorData;
-  };
-}
+import { EmbeddableSetup } from 'src/plugins/embeddable/server';
+export const registerVisualizationEmbeddableTelemetryCollector = (embeddable: EmbeddableSetup) => {
+  embeddable.telemetryCollector.register({
+    type: 'visualization',
+    fetcher: () => Promise.resolve([]),
+    extractor: () => [],
+    getBaseCollectorData: () => ({}),
+  });
+};

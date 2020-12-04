@@ -20,7 +20,9 @@
 import { ISavedObjectsRepository } from 'src/core/server';
 import { CollectorFetchContext, UsageCollectionSetup } from 'src/plugins/usage_collection/server';
 import { EmbeddableSetup } from 'src/plugins/embeddable/server';
-import { extractReferences } from '../common/saved_dashboard_references';
+import { extractReferences, injectReferences } from '../common/saved_dashboard_references';
+import { convertSavedDashboardPanelToPanelState } from '../common/embeddable/embeddable_saved_object_converters';
+import { SavedObjectDashboard, DashboardContainerInput } from '../public';
 
 type EmbeddableContext = Promise<{}>;
 
@@ -28,7 +30,8 @@ export function registerDashboardUsageCollector(
   usageCollection: UsageCollectionSetup,
   getSavedObjectsClient: () => ISavedObjectsRepository | undefined,
   embeddableTelemetry: EmbeddableSetup['telemetry'],
-  collector: EmbeddableSetup['collector']
+  collector: EmbeddableSetup['telemetryCollector'],
+  embeddable: EmbeddableSetup
 ) {
   const dashboardCollector = usageCollection.makeUsageCollector({
     type: 'dashboard-experimental',
@@ -77,12 +80,32 @@ export function registerDashboardUsageCollector(
         return Promise.resolve([]);
       }
 
-      return await (await client.find({ type: 'dashboard' })).saved_objects.map((so) => ({
+      const dashboards = await client.find<SavedObjectDashboard>({ type: 'dashboard' });
+
+      console.log(JSON.stringify(JSON.parse(dashboards.saved_objects[1].attributes.panelsJSON)));
+      const injected = dashboards.saved_objects.map((so) => ({
+        ...so,
+        attributes: injectReferences(so, { embeddablePersistableStateService: embeddable }),
+      }));
+
+      const res = injected.map((so) => ({
         id: so.id,
         type: so.type,
+        panels: JSON.parse(so.attributes.panelsJSON).map(convertSavedDashboardPanelToPanelState),
       }));
+
+      return res;
     },
-    extractor: () => [],
+    extractor: (input) => {
+      // Return all of the panel embeddable configs that are not id based
+      const embeddedPanels = input.panels.filter((p) => p.savedObjectId === undefined);
+      const embeddedPanelsConfigs = embeddedPanels.map((p) => ({
+        ...p.explicitInput,
+        type: p.type,
+      }));
+
+      return embeddedPanelsConfigs;
+    },
     getBaseCollectorData: () => ({ total: 0 }),
     type: 'dashboard',
   });

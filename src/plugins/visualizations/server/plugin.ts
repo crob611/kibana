@@ -21,6 +21,7 @@ import { i18n } from '@kbn/i18n';
 import { schema } from '@kbn/config-schema';
 import { Observable } from 'rxjs';
 import { UsageCollectionSetup } from 'src/plugins/usage_collection/server';
+import { EmbeddableSetup } from 'src/plugins/embeddable/server';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -35,6 +36,8 @@ import { visualizationSavedObjectType } from './saved_objects';
 
 import { VisualizationsPluginSetup, VisualizationsPluginStart } from './types';
 import { registerVisualizationsCollector } from './usage_collector';
+import { VisualizationEmbeddableFactory } from './embeddable/visualization_embeddable_factory';
+import { registerVisualizationEmbeddableTelemetryCollector } from './embeddable/register_embeddable_telemetry';
 
 export class VisualizationsPlugin
   implements Plugin<VisualizationsPluginSetup, VisualizationsPluginStart> {
@@ -46,7 +49,10 @@ export class VisualizationsPlugin
     this.config = initializerContext.config.legacy.globalConfig$;
   }
 
-  public setup(core: CoreSetup, plugins: { usageCollection?: UsageCollectionSetup }) {
+  public setup(
+    core: CoreSetup,
+    plugins: { usageCollection?: UsageCollectionSetup; embeddable: EmbeddableSetup }
+  ) {
     this.logger.debug('visualizations: Setup');
 
     core.savedObjects.registerType(visualizationSavedObjectType);
@@ -69,6 +75,9 @@ export class VisualizationsPlugin
     if (plugins.usageCollection) {
       registerVisualizationsCollector(plugins.usageCollection, this.config);
     }
+
+    plugins.embeddable.registerEmbeddableFactory(new VisualizationEmbeddableFactory());
+    registerVisualizationEmbeddableTelemetryCollector(plugins.embeddable);
 
     return {};
   }

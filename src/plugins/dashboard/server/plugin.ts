@@ -69,7 +69,8 @@ export class DashboardPlugin
       plugins.usageCollection,
       () => this.savedObjectsClient,
       plugins.embeddable.telemetry,
-      plugins.embeddable.telemetryCollector
+      plugins.embeddable.telemetryCollector,
+      plugins.embeddable
     );
 
     return {};

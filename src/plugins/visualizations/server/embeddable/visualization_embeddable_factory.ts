@@ -19,18 +19,36 @@
 
 import { EmbeddableRegistryDefinition } from '../../../embeddable/server';
 import { PersistableState } from '../../../kibana_utils/common/persistable_state';
+import { VisualizationUsage } from '../usage_collector/get_usage_collector';
+import { VisualizeInput } from '../../public/embeddable/visualize_embeddable';
 
-interface CollectorData {
-  total: number;
-}
+type UsageByType = VisualizationUsage[string];
 
-export class DashboardEmbeddableFactory implements EmbeddableRegistryDefinition {
-  public id: string = 'dashboard';
+export const getEmptyTypeData = (): UsageByType => ({
+  total: 0,
+  spaces_avg: 0,
+  saved_7_days_total: 0,
+  saved_30_days_total: 0,
+  saved_90_days_total: 0,
+});
 
-  public extract = (state) => {};
+export class VisualizationEmbeddableFactory implements EmbeddableRegistryDefinition {
+  public id: string = 'visualization';
 
-  public telemetry = (state, collectorData: CollectorData) => {
-    const newCollectorData = { ...collectorData, total: collectorData.total + 1 };
-    return newCollectorData;
+  public telemetry: PersistableState['telemetry'] = (
+    state: VisualizeInput,
+    collectorData: VisualizationUsage
+  ) => {
+    if (state.savedVis !== undefined) {
+      if (!collectorData[state.savedVis.type]) {
+        collectorData[state.savedVis.type] = getEmptyTypeData();
+      }
+
+      const typeData = collectorData[state.savedVis.type];
+
+      typeData.total = typeData.total + 1;
+    }
+
+    return collectorData;
   };
 }

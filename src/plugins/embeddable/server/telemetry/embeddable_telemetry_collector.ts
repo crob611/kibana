@@ -90,15 +90,23 @@ export class EmbeddableTelemetryCollector {
   }
 
   private handleResult(result: EmbeddableStateWithType, collectorData: CollectorData) {
-    const type = result.type;
-    const typeCollectorData = collectorData[type];
+    try {
+      const type = result.type;
 
-    collectorData[type] = this.telemetryFunction(result, typeCollectorData);
+      if (collectorData[type] !== undefined) {
+        const typeCollectorData = collectorData[type];
 
-    this.extractors[type](result).map(
-      (extracted) => this.handleResult(extracted, collectorData),
-      this
-    );
+        collectorData[type] = this.telemetryFunction(result, typeCollectorData);
+
+        this.extractors[type](result).map(
+          (extracted) => this.handleResult(extracted, collectorData),
+          this
+        );
+      }
+    } catch (e) {
+      console.log('error handling result', result);
+      console.log(this.extractors);
+    }
   }
 
   public run() {
