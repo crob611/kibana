@@ -43,9 +43,11 @@ import {
   registerCoreUsageCollector,
   registerLocalizationUsageCollector,
 } from './collectors';
+import { EmbeddableSetup } from 'src/plugins/embeddable/server';
 
 interface KibanaUsageCollectionPluginsDepsSetup {
   usageCollection: UsageCollectionSetup;
+  embeddable: EmbeddableSetup;
 }
 
 type SavedObjectsRegisterType = SavedObjectsServiceSetup['registerType'];
@@ -64,9 +66,16 @@ export class KibanaUsageCollectionPlugin implements Plugin {
     this.metric$ = new Subject<OpsMetrics>();
   }
 
-  public setup(coreSetup: CoreSetup, { usageCollection }: KibanaUsageCollectionPluginsDepsSetup) {
-    this.registerUsageCollectors(usageCollection, coreSetup, this.metric$, (opts) =>
-      coreSetup.savedObjects.registerType(opts)
+  public setup(
+    coreSetup: CoreSetup,
+    { usageCollection, embeddable }: KibanaUsageCollectionPluginsDepsSetup
+  ) {
+    this.registerUsageCollectors(
+      usageCollection,
+      coreSetup,
+      this.metric$,
+      (opts) => coreSetup.savedObjects.registerType(opts),
+      embeddable
     );
   }
 
@@ -87,14 +96,19 @@ export class KibanaUsageCollectionPlugin implements Plugin {
     usageCollection: UsageCollectionSetup,
     coreSetup: CoreSetup,
     metric$: Subject<OpsMetrics>,
-    registerType: SavedObjectsRegisterType
+    registerType: SavedObjectsRegisterType,
+    embeddable: EmbeddableSetup
   ) {
     const getSavedObjectsClient = () => this.savedObjectsClient;
     const getUiSettingsClient = () => this.uiSettingsClient;
     const getCoreUsageDataService = () => this.coreUsageData!;
 
     registerOpsStatsCollector(usageCollection, metric$);
-    registerKibanaUsageCollector(usageCollection, this.legacyConfig$);
+    registerKibanaUsageCollector(
+      usageCollection,
+      this.legacyConfig$,
+      embeddable.telemetryCollector
+    );
     registerManagementUsageCollector(usageCollection, getUiSettingsClient);
     registerUiMetricUsageCollector(usageCollection, registerType, getSavedObjectsClient);
     registerApplicationUsageCollector(

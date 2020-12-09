@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { first } from 'rxjs/operators';
 import {
   PluginInitializerContext,
   CoreSetup,
@@ -33,9 +32,9 @@ import { capabilitiesProvider } from './capabilities_provider';
 import { DashboardPluginSetup, DashboardPluginStart } from './types';
 import { EmbeddableSetup } from '../../embeddable/server';
 
-import { DashboardEmbeddableFactory } from './embeddable/dashboard_embeddable_factory';
+import { DashboardEmbeddable } from './embeddable/dashboard_embeddable_factory';
 
-import { registerDashboardUsageCollector } from './collector';
+import { registerEmbeddableTelemetry, registerDashboardUsageCollector } from './usage';
 
 interface SetupDeps {
   embeddable: EmbeddableSetup;
@@ -62,16 +61,15 @@ export class DashboardPlugin
     );
     core.capabilities.registerProvider(capabilitiesProvider);
 
-    const factory = new DashboardEmbeddableFactory();
-    plugins.embeddable.registerEmbeddableFactory(factory);
+    plugins.embeddable.registerEmbeddableFactory(DashboardEmbeddable);
 
     registerDashboardUsageCollector(
       plugins.usageCollection,
       () => this.savedObjectsClient,
-      plugins.embeddable.telemetry,
-      plugins.embeddable.telemetryCollector,
-      plugins.embeddable
+      plugins.embeddable.telemetryCollector
     );
+
+    registerEmbeddableTelemetry(plugins.embeddable, () => this.savedObjectsClient);
 
     return {};
   }

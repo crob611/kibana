@@ -17,23 +17,7 @@
  * under the License.
  */
 
-import { PluginInitializerContext, PluginConfigDescriptor } from '../../../core/server';
-import { DashboardPlugin } from './plugin';
-import { configSchema, ConfigSchema } from '../config';
+import { registerEmbeddableTelemetry } from './register_embeddable_telemetry';
+import { registerDashboardUsageCollector } from './register_usage_collector';
 
-export const config: PluginConfigDescriptor<ConfigSchema> = {
-  exposeToBrowser: {
-    allowByValueEmbeddables: true,
-  },
-  schema: configSchema,
-};
-
-//  This exports static code and TypeScript types,
-//  as well as, Kibana Platform `plugin()` initializer.
-
-export function plugin(initializerContext: PluginInitializerContext) {
-  return new DashboardPlugin(initializerContext);
-}
-
-export { DashboardPluginSetup, DashboardPluginStart } from './types';
-export { DashboardEmbeddableCollectorData } from './embeddable/dashboard_embeddable_factory';
+export { registerEmbeddableTelemetry, registerDashboardUsageCollector };

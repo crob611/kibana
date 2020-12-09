@@ -17,20 +17,36 @@
  * under the License.
  */
 
+import {
+  EmbeddableStateWithType,
+  PanelState,
+  EmbeddableInput,
+} from 'src/plugins/embeddable/common';
 import { EmbeddableRegistryDefinition } from '../../../embeddable/server';
-import { PersistableState } from '../../../kibana_utils/common/persistable_state';
 
-interface CollectorData {
+export interface DashboardEmbeddableCollectorData {
   total: number;
+  panels: number;
+  embeddedPanels: number;
 }
 
-export class DashboardEmbeddableFactory implements EmbeddableRegistryDefinition {
-  public id: string = 'dashboard';
-
-  public extract = (state) => {};
-
-  public telemetry = (state, collectorData: CollectorData) => {
-    const newCollectorData = { ...collectorData, total: collectorData.total + 1 };
-    return newCollectorData;
+export type DashboardEmbeddableInput = EmbeddableStateWithType & {
+  panels: {
+    [panelId: string]: PanelState<EmbeddableInput & { savedObjectId: string }>;
   };
-}
+};
+
+export const DashboardEmbeddable: EmbeddableRegistryDefinition<DashboardEmbeddableInput> = {
+  id: 'dashboard',
+
+  telemetry: (state, rawCollectorData) => {
+    const collectorData = rawCollectorData as DashboardEmbeddableCollectorData;
+    const total = (collectorData.total || 0) + 1;
+    const panels = (collectorData.panels || 0) + Object.values(state.panels).length;
+    const embeddedPanels =
+      (collectorData.embeddedPanels || 0) +
+      Object.values(state.panels).filter((p) => p.explicitInput.savedObjectId === undefined).length;
+
+    return { ...collectorData, total, panels, embeddedPanels };
+  },
+};

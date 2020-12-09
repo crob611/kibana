@@ -30,7 +30,7 @@ import { snakeCase } from 'lodash';
 import { LegacyAPICaller } from 'kibana/server';
 
 const TYPES = [
-  'dashboard',
+  //'dashboard',
   'visualization',
   'search',
   'index-pattern',
@@ -39,7 +39,7 @@ const TYPES = [
 ];
 
 export interface KibanaSavedObjectCounts {
-  dashboard: { total: number };
+  //dashboard: { total: number };
   visualization: { total: number };
   search: { total: number };
   index_pattern: { total: number };
@@ -78,8 +78,12 @@ export async function getSavedObjectsCounts(
   );
 
   // Add the doc_count from each bucket
-  return buckets.reduce(
+  const temp = buckets.reduce(
     (acc, { key, doc_count: total }) => (total ? { ...acc, [snakeCase(key)]: { total } } : acc),
     allZeros
   );
+
+  //temp.dashboard.total = 0;
+
+  return temp;
 }
