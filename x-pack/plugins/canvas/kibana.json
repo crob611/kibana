@@ -11,8 +11,8 @@
     "embeddable",
     "expressions",
     "features",
+    "fleet",
     "inspector",
-    "ingestManager",
     "uiActions",
     "charts"
   ],

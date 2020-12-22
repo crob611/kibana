@@ -87,7 +87,7 @@ export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ..
     return (
       <PackagesTableComponent
         {...restProps}
-        canWrite={capabilities.ingestManager.write as boolean}
+        canWrite={capabilities.fleet.write as boolean}
         getPackageInstallStatus={getPackageInstallStatus}
         getPackageHref={getPackageHref}
         packages={allPackagesRes.response}
