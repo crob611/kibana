@@ -16,12 +16,6 @@ export type PackagesTableProps = {
     canWrite is a boolean of if the user is able to install/uninstall
   */
   canWrite: boolean;
-  /*
-    getAssetCountComponent should fetch the assed count for the given package and pass it on to it's children
-  */
-  getAssetCountComponent: React.FC<{
-    packageKey: string;
-  }>;
 
   /*
     Get a link to a page to display more information about the package
@@ -29,16 +23,21 @@ export type PackagesTableProps = {
   getPackageHref: (pkgKey: string) => string;
 
   /*
+    getPackageAssetCount is a component that should accept a package key and return the number of assets
+  */
+  getPackageAssetCountComponent: React.FC<{ packageKey: string }>;
+
+  /*
+    getPackageDetailsComponent should fetch package info and package readme and pass on to children
+  */
+  getPackageDetailsComponent: React.FC<{
+    packageKey: string;
+  }>;
+
+  /*
     get the Install Status of a package by it's name
   */
   getPackageInstallStatus: (packageName: string) => InstallStatus;
-
-  /*
-    getReadmeComponent should fetch the README for the given package and pass it on to it's children
-  */
-  getReadmeComponent: React.FC<{
-    packageKey: string;
-  }>;
 
   /*
     iconComponent is a wrapper that takes in a Package and displays an icon for that package
@@ -64,13 +63,13 @@ export type PackagesTableProps = {
 const InstallButtonWrapper: FC<{
   package: RegistryPackage;
   canWrite: boolean;
-  getAssetCountComponent: React.FC<{ packageKey: string }>;
+  getPackageAssetCountComponent: React.FC<{ packageKey: string }>;
   onInstall: RegistryPackageFunction;
   onUninstall: RegistryPackageFunction;
   installStatus: InstallStatus;
 }> = ({
   package: packageData,
-  getAssetCountComponent,
+  getPackageAssetCountComponent,
   onInstall,
   onUninstall,
   installStatus,
@@ -83,7 +82,7 @@ const InstallButtonWrapper: FC<{
     <InstallationButton
       packageKey={`${packageData.name}-${packageData.version}`}
       canInstall={canWrite}
-      modalWrapperComponent={getAssetCountComponent}
+      modalWrapperComponent={getPackageAssetCountComponent}
       title={packageData.title || ''}
       installationStatus={installStatus}
       onInstall={handleInstall}
@@ -95,8 +94,8 @@ const InstallButtonWrapper: FC<{
 export const PackagesTable: FC<PackagesTableProps> = ({
   packages,
   iconComponent: IconComponent,
-  getReadmeComponent: ReadmeWrapper,
-  getAssetCountComponent,
+  getPackageDetailsComponent: ReadmeWrapper,
+  getPackageAssetCountComponent,
   getPackageHref,
   navigateToUrl,
   onInstallPackage,
@@ -158,7 +157,7 @@ export const PackagesTable: FC<PackagesTableProps> = ({
             onInstall={onInstallPackage}
             onUninstall={onUninstallPackage}
             package={packageData}
-            getAssetCountComponent={getAssetCountComponent}
+            getPackageAssetCountComponent={getPackageAssetCountComponent}
           />
         );
       },

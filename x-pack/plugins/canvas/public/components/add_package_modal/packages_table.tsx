@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import React, { FC, useRef, useMemo } from 'react';
+import React, { FC, Children, ReactElement, useRef, useMemo } from 'react';
 import { EuiLoadingContent } from '@elastic/eui';
 import { PackagesTable as PackagesTableComponent } from './packages_table.component';
 import {
@@ -17,8 +17,52 @@ import {
 } from '../../../../fleet/public/';
 
 import { PackageIcon } from './package_icon';
-import { NeedsPackageInfoAndReadme, NeedsAssetCount } from './needs_package_info';
-import { ManagePackagesProps, RegistryPackageFunction, InstallStatus } from '.';
+import { ManagePackagesProps, RegistryPackageFunction, InstallStatus, PackageInfo } from '.';
+
+import { NeedsPackageInfo, NeedsPackageReadme } from './fetch_components';
+
+const PackageInfoAndReadme: React.FC<{ packageKey: string }> = ({ packageKey, children }) => {
+  return (
+    <NeedsPackageInfo packageKey={packageKey}>
+      <NeedsPackageReadme key={'readme'} packageKey={packageKey}>
+        {children}
+      </NeedsPackageReadme>
+    </NeedsPackageInfo>
+  );
+};
+
+const getAssetCount = (packageInfo: PackageInfo) => {
+  return Object.entries(packageInfo.assets).reduce(
+    (acc, [serviceName, serviceNameValue]) =>
+      acc +
+      Object.entries(serviceNameValue || []).reduce(
+        (acc2, [assetName, assetNameValue]) => acc2 + assetNameValue.length,
+        0
+      ),
+    0
+  );
+};
+
+const NeedsAssetCount: React.FC<{ packageInfo?: PackageInfo }> = ({ packageInfo, children }) => {
+  if (!packageInfo) {
+    return <>{children}</>;
+  }
+
+  const assetCount = getAssetCount(packageInfo);
+  return (
+    <>
+      {Children.map(children, (child) => React.cloneElement(child as ReactElement, { assetCount }))}
+    </>
+  );
+};
+
+const PackageAssetCount: React.FC<{ packageKey: string }> = ({ packageKey, children }) => {
+  return (
+    <NeedsPackageInfo packageKey={packageKey}>
+      <NeedsAssetCount key="asset-count">{children}</NeedsAssetCount>
+    </NeedsPackageInfo>
+  );
+};
 
 export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ...restProps }) => {
   const hasSetInstallStatus = useRef<boolean>(false);
@@ -92,8 +136,8 @@ export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ..
         getPackageHref={getPackageHref}
         packages={allPackagesRes.response}
         iconComponent={PackageIcon}
-        getAssetCountComponent={NeedsAssetCount}
-        getReadmeComponent={NeedsPackageInfoAndReadme}
+        getPackageDetailsComponent={PackageInfoAndReadme}
+        getPackageAssetCountComponent={PackageAssetCount}
         onInstallPackage={handleInstall}
         onUninstallPackage={handleUninstall}
       />
