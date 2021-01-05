@@ -27,7 +27,7 @@ const NeedsPackageInfoFetch: FC<InfoProps> = ({ packageKey, onReceivedPackageInf
     onReceivedPackageInfo(packageKey, response);
   }
 
-  return <>{children}</>;
+  return null;
 };
 
 export const NeedsPackageInfo: FC<{ packageKey: string }> = ({ children, packageKey }) => {
@@ -37,25 +37,27 @@ export const NeedsPackageInfo: FC<{ packageKey: string }> = ({ children, package
         <PackageInfoCacheContext.Consumer>
           {(value) => {
             const cachedResponse = value.get(packageKey);
+            let needsPackageInfo = null;
 
             if (!cachedResponse) {
-              return (
+              needsPackageInfo = (
                 <NeedsPackageInfoFetch
                   key="fetch"
                   packageKey={packageKey}
                   onReceivedPackageInfo={cacheUpdater}
-                >
-                  {children}
-                </NeedsPackageInfoFetch>
+                />
               );
             }
 
-            return React.Children.map(children, (child) =>
-              React.cloneElement(child as ReactElement, {
-                packageInfo: cachedResponse?.data?.response,
-                error: cachedResponse?.error,
-              })
-            );
+            return [
+              React.Children.map(children, (child) =>
+                React.cloneElement(child as ReactElement, {
+                  packageInfo: cachedResponse?.data?.response,
+                  error: cachedResponse?.error,
+                })
+              ),
+              needsPackageInfo,
+            ];
           }}
         </PackageInfoCacheContext.Consumer>
       )}

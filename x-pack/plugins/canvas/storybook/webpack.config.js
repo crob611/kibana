@@ -108,6 +108,7 @@ module.exports = async ({ config: storybookConfig }) => {
             path.resolve(__dirname, '../../../../src/plugins/kibana_legacy/public/angular'),
             path.resolve(__dirname, '../../../../src/plugins/kibana_legacy/public/paginate'),
             path.resolve(__dirname, '../../../../src/plugins/home/public/application/index.scss'),
+            path.resolve(__dirname, '../../infra/public'),
           ],
           use: 'null-loader',
         },

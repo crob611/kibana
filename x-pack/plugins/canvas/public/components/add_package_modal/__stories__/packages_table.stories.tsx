@@ -4,10 +4,10 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import { EuiModal, EuiFlyout, EuiFlyoutBody, EuiIcon } from '@elastic/eui';
+import { EuiIcon } from '@elastic/eui';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import React, { FC } from 'react';
+import React, { FC, ReactElement } from 'react';
 import { PackagesTable } from '../packages_table.component';
 import { elasticLogo } from '../../../../canvas_plugin_src/lib/elastic_logo';
 import { elasticOutline } from '../../../../canvas_plugin_src/lib/elastic_outline';
@@ -26,10 +26,8 @@ const packages = [
   },
 ] as RegistryPackage[];
 
-const onSelect = action('onSelect');
-
 const Wrapper: FC = ({ children }) => <div style={{ width: '500px' }}>{children}</div>;
-const IconComponent: FC<{ package: PackageListItem }> = ({ package: packageItem }) => {
+const IconComponent: FC<{ package: RegistryPackage }> = ({ package: packageItem }) => {
   const icon = packageItem.name === 'Elastic Package' ? elasticLogo : elasticOutline;
   return <EuiIcon type={icon} size="l" />;
 };
@@ -49,12 +47,19 @@ const sampleAssets = {
 const ReadmeComponent: FC = ({ children }) => (
   <>
     {React.Children.map(children, (child) =>
-      React.cloneElement(child, { readme: sampleReadme, packageInfo: { assets: sampleAssets } })
+      React.cloneElement(child as ReactElement, {
+        readme: sampleReadme,
+        packageInfo: { assets: sampleAssets },
+      })
     )}
   </>
 );
 const AssetCountComponent: FC = ({ children }) => (
-  <>{React.Children.map(children, (child) => React.cloneElement(child, { assetCount: 20 }))}</>
+  <>
+    {React.Children.map(children, (child) =>
+      React.cloneElement(child as ReactElement, { assetCount: 20 })
+    )}
+  </>
 );
 
 const onInstall = action('onInstall');
@@ -67,8 +72,9 @@ storiesOf('components/PackagesTable', module).add('default', () => (
     <PackagesTable
       packages={packages}
       iconComponent={IconComponent}
-      getAssetCountComponent={AssetCountComponent}
-      getReadmeComponent={ReadmeComponent}
+      getPackageAssetCountComponent={AssetCountComponent}
+      getPackageDetailsComponent={ReadmeComponent}
+      canWrite={true}
       getPackageHref={(key) => 'https://google.com'}
       onInstallPackage={onInstall}
       onUninstallPackage={onUninstall}

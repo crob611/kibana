@@ -15,7 +15,6 @@ import React, { FC, Fragment, useCallback, useState, useEffect, useMemo } from '
 import { FormattedMessage } from '@kbn/i18n/react';
 import { PackageInfo, InstallStatus } from '../../../../fleet/common/';
 import { ConfirmPackageInstall, ConfirmPackageUninstall } from '../../../../fleet/public/';
-//import {InstallPackageType} from './packages_table'
 
 type InstallationButtonProps = Pick<PackageInfo, 'title'> & {
   disabled?: boolean;

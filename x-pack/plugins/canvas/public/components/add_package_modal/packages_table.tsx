@@ -44,11 +44,7 @@ const getAssetCount = (packageInfo: PackageInfo) => {
 };
 
 const NeedsAssetCount: React.FC<{ packageInfo?: PackageInfo }> = ({ packageInfo, children }) => {
-  if (!packageInfo) {
-    return <>{children}</>;
-  }
-
-  const assetCount = getAssetCount(packageInfo);
+  const assetCount = packageInfo ? getAssetCount(packageInfo) : undefined;
   return (
     <>
       {Children.map(children, (child) => React.cloneElement(child as ReactElement, { assetCount }))}
