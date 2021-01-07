@@ -59,7 +59,7 @@ export const NeedsPackageReadme: FC<{ packageKey: string; packageInfo?: PackageI
             }
 
             return React.Children.map(children, (child) =>
-              React.cloneElement(child as ReactElement, { readme })
+              React.cloneElement(child as ReactElement, { readme, packageInfo })
             );
           }}
         </PackageReadmeCacheContext.Consumer>

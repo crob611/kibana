@@ -95,7 +95,7 @@ export const PackagesTable: FC<PackagesTableProps> = ({
   packages,
   iconComponent: IconComponent,
   getPackageDetailsComponent: ReadmeWrapper,
-  getPackageAssetCountComponent,
+  getPackageAssetCountComponent: PackageAssetCountWrapper,
   getPackageHref,
   navigateToUrl,
   onInstallPackage,
@@ -114,9 +114,11 @@ export const PackagesTable: FC<PackagesTableProps> = ({
     } else {
       const packageKey = `${item.name}-${item.version}`;
       itemIdToExpandedRowMapValues[item.name] = (
-        <ReadmeWrapper packageKey={packageKey}>
-          <PackageDetail getPackageHref={getPackageHref} navigateToUrl={navigateToUrl} />
-        </ReadmeWrapper>
+        <PackageAssetCountWrapper packageKey={packageKey}>
+          <ReadmeWrapper packageKey={packageKey}>
+            <PackageDetail getPackageHref={getPackageHref} navigateToUrl={navigateToUrl} />
+          </ReadmeWrapper>
+        </PackageAssetCountWrapper>
       );
     }
     setItemIdToExpandedRowMap(itemIdToExpandedRowMapValues);
@@ -157,7 +159,7 @@ export const PackagesTable: FC<PackagesTableProps> = ({
             onInstall={onInstallPackage}
             onUninstall={onUninstallPackage}
             package={packageData}
-            getPackageAssetCountComponent={getPackageAssetCountComponent}
+            getPackageAssetCountComponent={PackageAssetCountWrapper}
           />
         );
       },

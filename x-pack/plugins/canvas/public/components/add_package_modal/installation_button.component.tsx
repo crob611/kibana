@@ -67,7 +67,7 @@ export const InstallationButtonModal: FC<{
 
   let modal = <ModalLoading onClose={onClose} />;
 
-  if (assetCount) {
+  if (assetCount !== undefined) {
     modal = isInstalled ? (
       <ConfirmPackageUninstall
         numOfAssets={assetCount}

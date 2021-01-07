@@ -21,11 +21,15 @@ import { ManagePackagesProps, RegistryPackageFunction, InstallStatus, PackageInf
 
 import { NeedsPackageInfo, NeedsPackageReadme } from './fetch_components';
 
-const PackageInfoAndReadme: React.FC<{ packageKey: string }> = ({ packageKey, children }) => {
+const PackageInfoAndReadme: React.FC<{ packageKey: string }> = ({
+  packageKey,
+  children,
+  ...otherProps
+}) => {
   return (
     <NeedsPackageInfo packageKey={packageKey}>
       <NeedsPackageReadme key={'readme'} packageKey={packageKey}>
-        {children}
+        {Children.map(children, (child) => React.cloneElement(child as ReactElement, otherProps))}
       </NeedsPackageReadme>
     </NeedsPackageInfo>
   );
@@ -60,7 +64,12 @@ const PackageAssetCount: React.FC<{ packageKey: string }> = ({ packageKey, child
   );
 };
 
-export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ...restProps }) => {
+export const PackagesTable: FC<ManagePackagesProps> = ({
+  query,
+  capabilities,
+  onInstallationStatusChange,
+  ...restProps
+}) => {
   const hasSetInstallStatus = useRef<boolean>(false);
   const setPackageInstallStatus = useSetPackageInstallStatus();
   const { data: allPackagesRes, isLoading } = useGetPackages(query);
@@ -79,8 +88,8 @@ export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ..
         name: packageData.name,
         version: packageData.version,
         title: packageData.title || '',
-      }),
-    [installPackage]
+      }).finally(() => onInstallationStatusChange()),
+    [installPackage, onInstallationStatusChange]
   );
 
   const handleUninstall = useMemo<RegistryPackageFunction>(
@@ -89,8 +98,8 @@ export const PackagesTable: FC<ManagePackagesProps> = ({ query, capabilities, ..
         name: packageData.name,
         version: packageData.version,
         title: packageData.title || '',
-      }),
-    [uninstallPackage]
+      }).finally(() => onInstallationStatusChange()),
+    [uninstallPackage, onInstallationStatusChange]
   );
 
   const getPackageInstallStatus = useMemo(
