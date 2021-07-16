@@ -5,35 +5,38 @@
  * 2.0.
  */
 
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { ViewBoxParams, ShapeType } from '../../../../../../src/plugins/presentation_util/public';
+import { Shape as ShapeComponent } from '../../../../../../src/plugins/expression_shape/public';
 
 interface Props {
   shape?: ShapeType;
 }
 
-export const ShapePreview: FC<Props> = ({ shape: Shape }) => {
-  if (!Shape) return <div className="canvasShapePreview" />;
+function getViewBox(defaultWidth: number, defaultViewBox: ViewBoxParams): ViewBoxParams {
+  const { minX, minY, width, height } = defaultViewBox;
+  return {
+    minX: minX - defaultWidth / 2,
+    minY: minY - defaultWidth / 2,
+    width: width + defaultWidth,
+    height: height + defaultWidth,
+  };
+}
 
-  function getViewBox(defaultWidth: number, defaultViewBox: ViewBoxParams): ViewBoxParams {
-    const { minX, minY, width, height } = defaultViewBox;
-    return {
-      minX: minX - defaultWidth / 2,
-      minY: minY - defaultWidth / 2,
-      width: width + defaultWidth,
-      height: height + defaultWidth,
-    };
-  }
+export const ShapePreview: FC<Props> = ({ shape: Shape }) => {
+  const getViewBoxCallback = useCallback((viewbox) => getViewBox(5, viewbox), []);
+  if (!Shape) return <div className="canvasShapePreview" />;
 
   return (
     <div className="canvasShapePreview">
-      <Shape.Component
+      <ShapeComponent
         shapeAttributes={{
           fill: 'none',
           stroke: 'black',
-          viewBox: getViewBox(5, Shape.data.viewBox),
+          viewBox: getViewBoxCallback,
         }}
+        contentAttributes={{}}
       />
     </div>
   );

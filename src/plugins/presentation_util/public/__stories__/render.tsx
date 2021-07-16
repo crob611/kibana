@@ -54,7 +54,7 @@ export const Render = <Renderer,>({
   }, [renderer, config, handlers]);
 
   return (
-    <div style={{ width, height }} ref={containerRef}>
+    <div style={{ width, height, border: '1px solid black' }} ref={containerRef}>
       {' '}
     </div>
   );

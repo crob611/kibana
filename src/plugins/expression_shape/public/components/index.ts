@@ -7,3 +7,4 @@
  */
 
 export * from './shape_component';
+export * from './shape';

@@ -6,12 +6,13 @@
  * Side Public License, v 1.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useResizeObserver } from '@elastic/eui';
 import { ShapeAttributes, ShapeContentAttributes } from '../../../presentation_util/public';
 import { Dimensions, ShapeComponentProps } from './types';
 import { shapes } from './shapes';
 import { getViewBox } from '../../common/lib';
+import { Shape } from './shape';
 
 function ShapeComponent({
   onLoaded,
@@ -48,27 +49,33 @@ function ShapeComponent({
 
   const { width, height } = dimensions;
 
-  const Shape = shapes[shapeType];
+  //const Shape = shapes[shapeType];
+
+  const getViewBoxCallback = useCallback(
+    (viewbox) => {
+      console.log(viewbox, 'viewbox callback');
+      return getViewBox(viewbox, {
+        borderOffset: strokeWidth,
+        width,
+        height,
+      });
+    },
+    [strokeWidth, width, height]
+  );
+
   const shapeAttributes: ShapeAttributes = {
     width,
     height,
     overflow: 'visible',
     preserveAspectRatio: maintainAspect ? 'xMidYMid meet' : 'none',
-    viewBox: getViewBox(Shape.data.viewBox, {
-      borderOffset: strokeWidth,
-      width,
-      height,
-    }),
+    viewBox: getViewBoxCallback,
   };
 
   parentNode.style.lineHeight = '0';
 
   return (
     <div className="shapeAligner">
-      <Shape.Component
-        shapeContentAttributes={shapeContentAttributes}
-        shapeAttributes={shapeAttributes}
-      />
+      <Shape contentAttributes={shapeContentAttributes} shapeAttributes={shapeAttributes} />
     </div>
   );
 }

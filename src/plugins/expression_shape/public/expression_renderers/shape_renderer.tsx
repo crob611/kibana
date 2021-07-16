@@ -40,7 +40,6 @@ export const shapeRenderer = (): ExpressionRenderDefinition<ShapeRendererConfig>
     handlers.onDestroy(() => {
       unmountComponentAtNode(domNode);
     });
-
     render(
       <I18nProvider>
         <ShapeComponent onLoaded={handlers.done} {...config} parentNode={domNode} />

@@ -17,10 +17,14 @@ storiesOf('renderers/shape', module).add('default', () => {
     type: 'shape' as 'shape',
     border: '#FFEEDD',
     borderWidth: 8,
-    shape: Shape.BOOKMARK,
+    shape: Shape.ARROW,
     fill: '#112233',
     maintainAspect: true,
   };
 
-  return <Render renderer={shape} config={config} />;
+  return (
+    <div>
+      <Render renderer={shape} config={config} />
+    </div>
+  );
 });
